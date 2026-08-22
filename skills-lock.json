@@ -7,17 +7,17 @@
       "skillPath": "skills/rest-api-codegen-ru/SKILL.md",
       "computedHash": "386581db840e040250979678f579324807e7f35707ce2f7c14bacde9cbc3cb66"
     },
-    "slm-design": {
-      "source": "gromlab-ru/slm-design",
-      "sourceType": "github",
-      "skillPath": "skills/slm-design/SKILL.md",
-      "computedHash": "db6bd9cf3bd2a0db7239362467caff87a6f94856c9529c44b4900d205fa0dadd"
-    },
     "svg-sprites-ru": {
       "source": "gromlab-ru/svg-sprites",
       "sourceType": "github",
       "skillPath": "skills/svg-sprites-ru/SKILL.md",
       "computedHash": "cc9370059c7bd50250035013681b25546c86b744dde00e7afcaacae3cdada32f"
+    },
+    "unit-architecture": {
+      "source": "gromlab-ru/unit-architecture",
+      "sourceType": "github",
+      "skillPath": "skills/unit-architecture/SKILL.md",
+      "computedHash": "87495b74488fe7d1dba644efb74d62ed2810c7e151ccd9564b093a0703ab6866"
     }
   }
 }
