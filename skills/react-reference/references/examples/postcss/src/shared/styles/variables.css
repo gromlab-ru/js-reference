@@ -1,0 +1,10 @@
+:root {
+  --color-action-primary: #3157d5;
+  --color-action-secondary: #e8ecf8;
+  --color-focus-ring: #6f8cff;
+  --color-surface-page: #f7f8fc;
+  --color-text-on-action: #ffffff;
+  --color-text-primary: #172038;
+  --font-family-sans: Inter, system-ui, sans-serif;
+  --radius-control: 0.625rem;
+}

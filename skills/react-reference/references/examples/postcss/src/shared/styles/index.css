@@ -1,0 +1,18 @@
+@import './variables.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color: var(--color-text-primary);
+  background: var(--color-surface-page);
+  font-family: var(--font-family-sans);
+}
+
+body {
+  min-block-size: 100vh;
+  margin: 0;
+}

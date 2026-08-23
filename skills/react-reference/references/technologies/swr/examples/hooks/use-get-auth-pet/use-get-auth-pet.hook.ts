@@ -1,0 +1,24 @@
+import useSWR from 'swr'
+import { getPet } from 'src/domains/pet'
+import { useGetUser } from 'src/domains/user'
+import { getAuthPetKey } from './get-auth-pet-key'
+import type {
+  GetAuthPetData,
+  GetAuthPetError,
+  GetAuthPetKey,
+  UseGetAuthPetResponse
+} from './types/use-get-auth-pet.type'
+
+/**
+ * Возвращает питомца в cache scope авторизованного пользователя.
+ */
+export const useGetAuthPet = (petId: string | null): UseGetAuthPetResponse => {
+  const user = useGetUser()
+  const userId = user.data?.userId ?? null
+  const key = getAuthPetKey(userId, petId)
+  const fetcher = ([, , , currentPetId]: GetAuthPetKey) => {
+    return getPet(currentPetId)
+  }
+
+  return useSWR<GetAuthPetData, GetAuthPetError, GetAuthPetKey | null>(key, fetcher)
+}

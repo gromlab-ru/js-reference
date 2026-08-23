@@ -1,0 +1,8 @@
+{
+  "name": "reference-skills",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node src/skills/build.mjs"
+  }
+}
