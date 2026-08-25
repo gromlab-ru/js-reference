@@ -60,4 +60,6 @@ Generated client не требует runtime dependency на package генер�
 
 После генерации прочитай фактические exports, структуру `operationsTree` и сигнатуры нужных операций. Затем настрой [`transport`](transport.md) и собери [`API client`](api-client.md).
 
-Если OpenAPI отсутствует, используй [`manual operations`](manual-operations.md). Если specification содержит ошибку, не редактируй output и создай [`patch`](patching.md).
+Если OpenAPI отсутствует, создай полностью ручной клиент в [`extensions`](manual-operations.md). Если specification не
+содержит нужный endpoint или описывает его неверно, не редактируй output и добавь изменение в
+[`overrides`](patching.md).

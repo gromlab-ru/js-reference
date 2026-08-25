@@ -3,8 +3,8 @@
 Сначала найди существующий transport или SDK и переиспользуй его. Путь файла, base URL, auth и error policy определяй
 по runtime и соглашениям текущего проекта.
 
-`HttpClient` выполняет generated и manual operations. Создай один transport для API и храни в нём общие настройки
-HTTP:
+Создай один transport для API и храни в нём общие настройки HTTP. Для generated-клиента и его `overrides` импортируй
+`HttpClient` из `generated`:
 
 ```ts
 import { HttpClient } from './generated'
@@ -18,11 +18,8 @@ export const httpClient = new HttpClient({
 })
 ```
 
-Для generated operations импортируй `HttpClient` из generated client. Для полностью ручного client без OpenAPI
-импортируй его из `@gromlab/rest-api-codegen`. Operations и transport должны использовать совместимые контракты.
-
-Patched operations используют тот же transport. Не создавай отдельный `HttpClient` только из-за того, что часть
-operations написана вручную или исправляет OpenAPI.
+Для полностью ручного клиента в `extensions` импортируй `HttpClient` из `@gromlab/rest-api-codegen`. Operations и
+transport должны использовать совместимые контракты. Все operations одного API используют один transport.
 
 ## Возможности
 

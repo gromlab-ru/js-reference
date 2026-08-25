@@ -7,33 +7,51 @@
 ## Возможности
 
 - Автоматическая генерация типов и операций из OpenAPI.
-- Ручное создание операций, если OpenAPI отсутствует или не содержит нужный endpoint.
+- Ручное создание API-клиента, если OpenAPI отсутствует.
 - Общая настройка URL, авторизации, обработки ошибок и других параметров запросов через `HttpClient`.
-- Исправление сгенерированных операций и типов без изменения generated-файлов.
+- Добавление и исправление операций и типов поверх generated-клиента без изменения generated-файлов.
 - Сборка полного клиента, частичных клиентов или прямой вызов отдельной операции.
 - Создание общего SDK для нескольких приложений.
 
+## Базовая концепция
+
+Сначала определи источник операций:
+
+- Если сервис предоставляет OpenAPI, создай клиент через [`generated`](automatic-generation.md).
+- Если OpenAPI отсутствует, создай клиент вручную в [`extensions`](manual-operations.md).
+- Если в OpenAPI не хватает endpoint или сгенерированный контракт неверен, добавь изменения в
+  [`overrides`](patching.md).
+
+Структура всегда соответствует одному из вариантов:
+
+```text
+generated
+generated → overrides
+extensions
+```
+
+`generated` и `extensions` не используются вместе. `overrides` существует только поверх `generated`.
+
+## Правила
+
+- Размещай API-клиенты только в `src/infra`.
+- Для каждого внешнего API создавай отдельный модуль `src/infra/<name>-api`.
+- Не изменяй файлы внутри `generated`.
+- Импортируй клиент, HTTP-клиент, операции и типы через публичные экспорты API-модуля.
+
 ## Быстрый старт
 
-Перед созданием нового клиента проверь, нет ли в проекте готового клиента или SDK для нужного REST API.
-
-В примере клиент Pet Store размещается в `src/infra/pet-store-api`:
+В этом примере создадим API-клиент из OpenAPI и разместим его в `src/infra/pet-store-api`:
 
 ```text
 src/infra/pet-store-api/
-├── generated/             # если используется OpenAPI
-├── extensions/            # если нужны ручные операции
-├── overrides/             # если нужны исправления
+├── generated/
 ├── transport.ts
 ├── pet-store-api.ts
 └── index.ts
 ```
 
-Создавай только необходимые каталоги.
-
-### 1. Подготовь операции
-
-Если сервис предоставляет OpenAPI, сгенерируй типы и операции:
+### 1. Сгенерируй операции
 
 ```bash
 npx --yes @gromlab/rest-api-codegen@5.2.4 \
@@ -41,15 +59,27 @@ npx --yes @gromlab/rest-api-codegen@5.2.4 \
   --output ./src/infra/pet-store-api/generated
 ```
 
-Зафиксируй команду в `package.json`, чтобы последующие запуски использовали одну версию и параметры. Подробнее:
-[`Автоматическая генерация`](automatic-generation.md).
+Добавь команду в `package.json`, чтобы повторная генерация использовала ту же версию и параметры:
 
-Если OpenAPI отсутствует или в ней нет нужного endpoint, создай [`операцию вручную`](manual-operations.md). Ошибки в
-сгенерированных операциях и типах исправляй через [`overrides`](patching.md), не изменяя generated-файлы.
+```json
+{
+  "scripts": {
+    "generate:pet-store-api": "npx --yes @gromlab/rest-api-codegen@5.2.4 --input https://api.example.com/openapi.json --output ./src/infra/pet-store-api/generated"
+  }
+}
+```
+
+Последующие генерации запускай через project script:
+
+```bash
+npm run generate:pet-store-api
+```
+
+Подробнее: [`Автоматическая генерация`](automatic-generation.md).
 
 ### 2. Настрой HTTP-клиент
 
-Создай `transport.ts` и укажи общие настройки REST API:
+Создай `transport.ts`:
 
 ```ts
 import { HttpClient } from './generated'
@@ -59,11 +89,11 @@ export const httpClient = new HttpClient({
 })
 ```
 
-Авторизацию, обработку ошибок и другие возможности смотри в разделе [`HTTP transport`](transport.md).
+Подробнее о настройках: [`HTTP transport`](transport.md).
 
 ### 3. Собери API-клиент
 
-Свяжи HTTP-клиент с подготовленными операциями в `pet-store-api.ts`:
+Создай `pet-store-api.ts`:
 
 ```ts
 import {
@@ -79,12 +109,9 @@ export const petStoreApi = createApiClient(
 )
 ```
 
-Клиент может содержать все операции или только нужную часть. Варианты сборки описаны в разделе
-[`Сборка API-клиента`](api-client.md).
+Полный и частичный варианты описаны в разделе [`Сборка API-клиента`](api-client.md).
 
 ### 4. Экспортируй клиент, операции и типы
-
-Экспортируй из `index.ts` готовый клиент, HTTP-клиент, операции и типы:
 
 ```ts
 export { petStoreApi } from './pet-store-api'
@@ -96,22 +123,19 @@ export * from './generated/operations'
 
 ### 5. Используй клиент
 
-Импортируй клиент и вызывай его методы:
-
 ```ts
 import { petStoreApi } from '@/infra/pet-store-api'
 
 const pet = await petStoreApi.pets.getPet({ id: '42' })
 ```
 
-Настройка отдельного запроса, его отмена и прямой вызов операции показаны в разделе
-[`Использование API-клиента`](usage.md).
+Другие варианты вызова показаны в разделе [`Использование API-клиента`](usage.md).
 
 ## Карта документации
 
 - [`Автоматическая генерация`](automatic-generation.md) — создание типов и операций из OpenAPI.
-- [`Ручное создание операций`](manual-operations.md) — работа без OpenAPI и добавление отсутствующих endpoint.
-- [`Исправление операций и типов`](patching.md) — исправление generated-кода без его редактирования.
+- [`Ручное создание операций`](manual-operations.md) — полностью ручной клиент без OpenAPI.
+- [`Дополнение и исправление generated-клиента`](patching.md) — ручные изменения поверх generated-кода.
 - [`HTTP transport`](transport.md) — общие настройки запросов, авторизации и обработки ошибок.
 - [`Сборка API-клиента`](api-client.md) — полный и частичный клиенты.
 - [`Использование API-клиента`](usage.md) — вызов методов, настройка и отмена запросов.

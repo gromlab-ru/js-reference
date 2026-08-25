@@ -21,9 +21,8 @@ apps/
 packages/
 └── pet-store-rest-sdk/
     ├── src/
-    │   ├── generated/
-    │   ├── extensions/
-    │   ├── overrides/
+    │   ├── generated/          # или extensions/
+    │   ├── overrides/          # только поверх generated
     │   ├── create-api-client.ts
     │   └── http-client.ts
     ├── dist/
@@ -63,14 +62,20 @@ exports. Workspace и npm SDK используют одинаковые публ
 
 ## Generated, extensions и overrides
 
-При наличии OpenAPI генерируй SDK в `src/generated` по [`automatic-generation.md`](automatic-generation.md). Если OpenAPI отсутствует, создай полный tree в `src/extensions` по [`manual-operations.md`](manual-operations.md) и экспортируй runtime primitives `@gromlab/rest-api-codegen` через стабильные package subpaths.
+При наличии OpenAPI генерируй SDK в `src/generated` по [`automatic-generation.md`](automatic-generation.md). Если
+OpenAPI отсутствует, создай полностью ручной клиент в `src/extensions` по
+[`manual-operations.md`](manual-operations.md). `generated` и `extensions` являются альтернативами и не используются
+вместе.
 
-При переходе с ручного режима на generated сохраняй публичные imports и структуру API client. `extensions` начинает
-накладываться на новый generated tree, а operations, появившиеся в OpenAPI, удаляются из ручного слоя.
+Новые и исправленные operations и types поверх `generated` размещай в `overrides` по
+[`patching.md`](patching.md). Package exports, operation barrel, `operationsTree` и точные subpaths изменённых operations
+должны вести в `overrides`; остальные operation subpaths продолжают вести в `generated`.
 
-Если generated contracts содержат ошибки, используй накопительный `overrides` по [`patching.md`](patching.md). Package
-exports, operation barrel, `operationsTree` и точные subpaths исправленных operations должны вести в верхний активный
-слой. Consumers SDK не должны знать, была operation сгенерирована, добавлена вручную или исправлена.
+В TypeScript source SDK с `NodeNext` добавляй `.js` ко всем относительным imports и re-exports. Extensionless imports в
+связанных разделах предназначены для приложений с bundler.
+
+При переходе с `extensions` на OpenAPI переключи SDK на `generated` одним изменением. Операции, которых нет в OpenAPI
+или которые сгенерированы неверно, перенеси в `overrides`, после чего удали `extensions`.
 
 ## Runtime facades
 
@@ -165,7 +170,7 @@ runtime facades:
 
 Удали `./data-contracts`, если SDK не поддерживает этот subpath как публичный контракт.
 
-### SDK с extensions и overrides
+### SDK с generated и overrides
 
 Aggregate exports и `operationsTree` ведут в верхний активный слой. Каждая ручная или исправленная operation получает
 точный публичный subpath, а wildcard остаётся fallback для остальных generated operations:
@@ -201,8 +206,8 @@ Aggregate exports и `operationsTree` ведут в верхний активн�
       "import": "./dist/overrides/operations/get-pet.js"
     },
     "./operations/get-pet-history": {
-      "types": "./dist/extensions/operations/get-pet-history.d.ts",
-      "import": "./dist/extensions/operations/get-pet-history.js"
+      "types": "./dist/overrides/operations/get-pet-history.d.ts",
+      "import": "./dist/overrides/operations/get-pet-history.js"
     },
     "./operations/*": {
       "types": "./dist/generated/operations/*.d.ts",
@@ -216,12 +221,11 @@ Aggregate exports и `operationsTree` ведут в верхний активн�
 }
 ```
 
-В примере `get-pet` исправлен в `overrides`, а `get-pet-history` добавлен в `extensions`. Точные exports имеют приоритет
-над `./operations/*`. Cumulative `index.ts`, `data-contracts/index.ts` и `operations/index.ts` верхнего слоя должны
-предоставлять итоговый публичный контракт SDK.
+В примере `get-pet` исправлен, а `get-pet-history` добавлен в `overrides`. Точные exports имеют приоритет над
+`./operations/*`. Cumulative `index.ts`, `data-contracts/index.ts` и `operations/index.ts` слоя `overrides` должны
+переэкспортировать неизменённый generated-контракт и явно предоставлять добавленные и исправленные сущности.
 
-Если `overrides` отсутствует, aggregate exports и `operationsTree` ведут в `extensions`. Точные exports ручных
-operations сохраняются, а wildcard продолжает вести в `generated`.
+Если `overrides` отсутствует, используй конфигурацию generated-only.
 
 ### Manual-only SDK
 
@@ -230,14 +234,12 @@ operations сохраняются, а wildcard продолжает вести �
 
 ## Импорты из SDK
 
-Для создания полного API client используй root import:
+Для создания полного API client импортируй итоговое дерево из root, а runtime — из стабильных subpaths:
 
 ```ts
-import {
-  createApiClient,
-  HttpClient,
-  operationsTree,
-} from '@acme/pet-store-rest-sdk'
+import { operationsTree } from '@acme/pet-store-rest-sdk'
+import { createApiClient } from '@acme/pet-store-rest-sdk/create-api-client'
+import { HttpClient } from '@acme/pet-store-rest-sdk/http-client'
 
 const httpClient = new HttpClient({
   baseUrl: 'https://api.example.com',
@@ -249,8 +251,8 @@ export const petStoreApi = createApiClient(
 )
 ```
 
-Root `index.ts` верхнего активного слоя экспортирует runtime facades, итоговые data contracts, cumulative operations
-barrel и полный `operationsTree`.
+Root `index.ts` активной реализации экспортирует итоговые data contracts, cumulative operations barrel и полный
+`operationsTree`. `HttpClient` и `createApiClient` импортируются через стабильные subpaths.
 
 Используй отдельные subpaths, если полный контракт не нужен. Для настройки только transport:
 

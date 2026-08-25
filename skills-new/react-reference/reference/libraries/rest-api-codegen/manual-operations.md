@@ -1,54 +1,49 @@
 # Ручное создание операций
 
-Создавай operation вручную, если сервис не предоставляет OpenAPI или нужный endpoint отсутствует в specification.
-Ручные operations принадлежат слою `extensions`: он предоставляет полный `operationsTree`, готовый для сборки API
-client.
+Используй `extensions`, если сервис не предоставляет OpenAPI и весь API-клиент создаётся вручную. `extensions` является
+самостоятельной реализацией и не используется вместе с `generated`.
 
-Если operation существует в OpenAPI, но сгенерирована неверно, не добавляй её в `extensions` и используй
-[`overrides`](patching.md).
+Если OpenAPI существует, но не содержит нужный endpoint или описывает его неверно, добавь операцию в
+[`overrides`](patching.md) поверх `generated`.
+
+## Установка
+
+Установи `@gromlab/rest-api-codegen` как runtime dependency:
+
+```bash
+npm install @gromlab/rest-api-codegen
+```
+
+Используй package manager текущего проекта. Библиотека предоставляет контракты запросов, `HttpClient` и
+`createApiClient`.
 
 ## Структура extensions
 
-Размещай ручные contracts и operations внутри существующего API-юнита:
+Размещай ручные типы и операции внутри API-модуля:
 
 ```text
 <api-unit>/
-├── generated/                   # отсутствует у полностью ручного client
 ├── extensions/
 │   ├── data-contracts/
+│   │   ├── pet.ts
+│   │   └── index.ts
 │   ├── operations/
-│   │   ├── create-pet.ts
-│   │   └── get-pet.ts
+│   │   ├── get-pet.ts
+│   │   └── index.ts
 │   ├── operations-tree.ts
 │   └── index.ts
 ├── transport.ts
 └── <api-name>.ts
 ```
 
-Состав слоя `extensions`:
-
-- `data-contracts/` — типы для ручных operations;
-- `operations/` — operations, созданные вручную;
-- `operations-tree.ts` — полный граф ручного client либо generated-граф с добавленными operations;
-- `index.ts` — публичные exports слоя.
-
-## Установка
-
-Если client полностью создаётся вручную, установи `@gromlab/rest-api-codegen` как runtime dependency:
-
-```bash
-npm install @gromlab/rest-api-codegen
-```
-
-Используй package manager текущего проекта. Библиотека предоставляет типы для создания operations, `HttpClient` и
-`createApiClient`.
-
-Если `extensions` дополняет generated client, используй API из `generated` и не устанавливай дополнительную runtime
-dependency.
+- `data-contracts/` содержит типы запросов и ответов.
+- `operations/` содержит функции запросов.
+- `operations-tree.ts` группирует все операции ручного клиента.
+- `index.ts` экспортирует полный публичный контракт `extensions`.
 
 ## Типы запроса и ответа
 
-Создавай transport types в `extensions/data-contracts`:
+Описывай фактический wire contract в `extensions/data-contracts`:
 
 ```ts
 // extensions/data-contracts/pet.ts
@@ -58,12 +53,11 @@ export interface Pet {
 }
 ```
 
-Эти типы описывают wire contract и не заменяют domain models приложения.
+Эти типы не заменяют domain models приложения.
 
-## Создание функции запроса
+## Создание операции
 
-Operation принимает `ApiRequestClient` первым аргументом, входные данные вторым, а `RequestParams` последним. При
-сборке API client библиотека автоматически связывает operation с настроенным `HttpClient`:
+Операция принимает `ApiRequestClient` первым аргументом, входные данные вторым, а `RequestParams` последним:
 
 ```ts
 // extensions/operations/get-pet.ts
@@ -88,16 +82,12 @@ export function getPet(
 }
 ```
 
-Для полностью ручного client импортируй runtime contracts из `@gromlab/rest-api-codegen`. Если `generated` уже
-существует, импортируй совместимые `ApiRequestClient` и `RequestParams` из generated public entry текущего API-юнита.
-
-Явно указывай фактические path, method, query, body, content type, response format и security marker. Path parameters
+Получай path, method, query, body, content type и response format из подтверждённого API-контракта. Path parameters
 кодируй через `encodeURIComponent`.
 
-## Создание дерева операций для ручного клиента
+## Дерево операций
 
-Чтобы объединить ручные функции запросов в единый client, создай `extensions/operations-tree.ts`. Файл группирует
-operations и экспортирует полный граф для `createApiClient`:
+Собери все ручные операции в `extensions/operations-tree.ts`:
 
 ```ts
 import { getPet } from './operations/get-pet'
@@ -107,44 +97,38 @@ export const operationsTree = {
     getPet,
   },
 }
+
+export type OperationsTree = typeof operationsTree
 ```
 
-В этом режиме API client импортирует `createApiClient` из package, а `operationsTree` — из `extensions`.
-
-## Добавление ручных запросов в сгенерированное дерево операций
-
-Чтобы дополнить сгенерированный client, создай `extensions/operations-tree.ts` на основе дерева из `generated`. Файл
-сохраняет сгенерированные operations и добавляет к ним ручные:
+API-клиент использует `createApiClient` из package и `operationsTree` из `extensions`:
 
 ```ts
-import { operationsTree as generatedOperationsTree } from '../generated'
+import { createApiClient } from '@gromlab/rest-api-codegen'
 
-import { getPetHistory } from './operations/get-pet-history'
+import { operationsTree } from './extensions'
+import { httpClient } from './transport'
 
-export const operationsTree = {
-  ...generatedOperationsTree,
-  pets: {
-    ...generatedOperationsTree.pets,
-    getPetHistory,
-  },
-}
+export const petStoreApi = createApiClient(
+  httpClient,
+  operationsTree,
+)
 ```
 
-Не заменяй через `extensions` существующий generated key. Такой конфликт означает, что operation должна находиться в
-`overrides`. Не выполняй слепой shallow merge групп: сохраняй соседние generated operations явным spread каждой
-изменяемой группы.
+## Экспорты extensions
 
-Экспортируй полный tree через `extensions/index.ts` и собирай API client из этого слоя. Подробный выбор слоя описан в
-[`api-client.md`](api-client.md).
+Экспортируй типы, операции и полное дерево через `extensions/index.ts`:
 
-## Появление OpenAPI
+```ts
+export type * from './data-contracts'
+export * from './operations'
+export * as operations from './operations'
+export { operationsTree } from './operations-tree'
+export type { OperationsTree } from './operations-tree'
+```
 
-Когда сервис добавляет OpenAPI, сгенерируй `generated` и сопоставь его operations с `extensions`:
+## Переход на OpenAPI
 
-1. Удали extension, если generated operation корректно реализует тот же contract.
-2. Оставь extension, если endpoint по-прежнему отсутствует в OpenAPI.
-3. Перенеси исправление в `overrides`, если endpoint появился, но сгенерирован неверно.
-4. Оставь публичную группу и имя метода API client без изменений.
-
-Если все ручные operations заменены generated-операциями, удали `extensions` и переключи API client на generated
-`operationsTree`.
+Когда сервис добавит OpenAPI, сгенерируй новый `generated` и сопоставь его с публичным контрактом ручного клиента.
+Операции, которых нет в OpenAPI или которые сгенерированы неверно, перенеси в `overrides`. После переключения удали
+`extensions`: итоговая структура должна состоять из `generated` и, при необходимости, `overrides`.

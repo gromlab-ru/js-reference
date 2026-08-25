@@ -1,34 +1,69 @@
-# Исправление операций и типов
+# Дополнение и исправление generated-клиента
 
-Создавай override, если OpenAPI содержит неверную operation или data contract и исправление сервиса нельзя получить
-сразу. Generated output не редактируется: повторная генерация полностью заменит его содержимое.
+Используй `overrides`, если OpenAPI не содержит нужный endpoint либо сгенерированные операция или тип неверны.
+`overrides` существует только поверх `generated`: generated-файлы не изменяются и могут безопасно перегенерироваться.
 
-`overrides` является верхним накопительным слоем. Он использует полный `operationsTree` из `extensions`, если ручные
-расширения существуют, иначе — из `generated`. После замены ошибочных ключей `overrides/operations-tree.ts` экспортирует
-полный граф для сборки API client.
+Если клиент полностью создаётся вручную без OpenAPI, используй [`extensions`](manual-operations.md) и исправляй его
+напрямую.
 
 ## Структура overrides
 
 ```text
 <api-unit>/
 ├── generated/
-├── extensions/                  # необязательный нижний слой
 ├── overrides/
 │   ├── data-contracts/
+│   │   ├── pet.ts
+│   │   ├── pet-history.ts
+│   │   └── index.ts
 │   ├── operations/
+│   │   ├── get-pet.ts
+│   │   ├── get-pet-history.ts
+│   │   └── index.ts
 │   ├── operations-tree.ts
 │   └── index.ts
 ├── transport.ts
 └── <api-name>.ts
 ```
 
-`overrides/data-contracts` содержит исправленные generated types. `overrides/operations` содержит operations, которые
-заменяют ошибочные generated operations. Не размещай здесь новый endpoint, отсутствующий в OpenAPI: он принадлежит
-[`extensions`](manual-operations.md).
+- `data-contracts/` содержит добавленные и исправленные типы.
+- `operations/` содержит добавленные и исправленные операции.
+- `operations-tree.ts` предоставляет полный generated-граф с изменениями.
+- `index.ts` экспортирует итоговый публичный контракт.
 
-## Исправленный тип
+## Добавление операции
 
-Строй исправленный contract поверх generated type, если его корректная часть пригодна для повторного использования:
+Если endpoint отсутствует в OpenAPI, создай для него типы и операцию в `overrides`:
+
+```ts
+// overrides/operations/get-pet-history.ts
+import type {
+  ApiRequestClient,
+  RequestParams,
+} from '../../generated'
+
+import type { PetHistory } from '../data-contracts/pet-history'
+
+export function getPetHistory(
+  httpClient: ApiRequestClient,
+  { id }: { id: string },
+  params: RequestParams = {},
+) {
+  return httpClient.request<PetHistory>({
+    path: `/pets/${encodeURIComponent(id)}/history`,
+    method: 'GET',
+    format: 'json',
+    ...params,
+  })
+}
+```
+
+Описывай операцию только по подтверждённому API-контракту. После появления endpoint в OpenAPI удали ручную реализацию
+и используй generated-операцию.
+
+## Исправление типа
+
+Строй исправленный contract поверх generated-типа, если его корректная часть пригодна для повторного использования:
 
 ```ts
 // overrides/data-contracts/pet.ts
@@ -39,13 +74,12 @@ export type Pet = Omit<GeneratedPet, 'name'> & {
 }
 ```
 
-Публичный re-export исправленного типа не меняет сигнатуры generated operations, которые импортируют исходный type
-напрямую. Если неверный type используется в нескольких operations, исправь каждую затронутую operation.
+Публичный re-export типа не меняет сигнатуры generated-операций, которые импортируют исходный тип напрямую. Исправь
+каждую операцию, использующую неверный contract.
 
-## Исправленная operation
+## Исправление операции
 
-Исправленная operation повторяет публичное имя и назначение generated operation, но использует корректный wire
-contract:
+Исправленная операция сохраняет публичное имя generated-операции, но использует корректный wire contract:
 
 ```ts
 // overrides/operations/get-pet.ts
@@ -70,61 +104,73 @@ export function getPet(
 }
 ```
 
-Получай path, method, параметры, response и errors из подтверждённого wire contract. Не исправляй operation на основе
-предположения о поведении endpoint.
+Получай path, method, параметры, response и errors из подтверждённого wire contract.
 
-## Наложение на generated
+## Итоговое дерево операций
 
-Если `extensions` отсутствует, используй generated tree как нижний слой:
-
-```ts
-import { operationsTree as baseOperationsTree } from '../generated'
-
-import { getPet } from './operations/get-pet'
-
-export const operationsTree = {
-  ...baseOperationsTree,
-  pets: {
-    ...baseOperationsTree.pets,
-    getPet,
-  },
-}
-```
-
-## Наложение на extensions
-
-Если API-юнит содержит ручные расширения, накладывай overrides на уже полный extensions tree:
+Собери полный граф на основе generated `operationsTree`, заменяя неверные операции и добавляя отсутствующие:
 
 ```ts
-import { operationsTree as baseOperationsTree } from '../extensions'
+// overrides/operations-tree.ts
+import { operationsTree as generatedOperationsTree } from '../generated'
 
 import { getPet } from './operations/get-pet'
+import { getPetHistory } from './operations/get-pet-history'
 
 export const operationsTree = {
-  ...baseOperationsTree,
+  ...generatedOperationsTree,
   pets: {
-    ...baseOperationsTree.pets,
+    ...generatedOperationsTree.pets,
     getPet,
+    getPetHistory,
   },
 }
+
+export type OperationsTree = typeof operationsTree
 ```
 
-В обоих случаях `overrides/operations-tree.ts` предоставляет полный граф. Сохраняй соседние operations явным merge
-каждой изменяемой группы. Для consumers путь `petStoreApi.pets.getPet` остаётся прежним.
+Сохраняй соседние generated-операции явным spread каждой изменяемой группы.
 
-Экспортируй итоговый tree через `overrides/index.ts`. Пока слой существует, API client импортирует `operationsTree`
-только из `overrides`; правила выбора описаны в [`api-client.md`](api-client.md).
+## Экспорты overrides
+
+Barrel операций переэкспортирует generated-операции и явно заменяет или добавляет нужные:
+
+```ts
+// overrides/operations/index.ts
+export * from '../../generated/operations'
+export { getPet } from './get-pet'
+export { getPetHistory } from './get-pet-history'
+```
+
+Типы экспортируются по тому же принципу:
+
+```ts
+// overrides/data-contracts/index.ts
+export type * from '../../generated/data-contracts'
+export type { Pet } from './pet'
+export type { PetHistory } from './pet-history'
+```
+
+Итоговый `overrides/index.ts` предоставляет types, operations и полное дерево:
+
+```ts
+export type * from './data-contracts'
+export * from './operations'
+export * as operations from './operations'
+export { operationsTree } from './operations-tree'
+export type { OperationsTree } from './operations-tree'
+```
+
+Пока `overrides` существует, API-клиент и публичные экспорты API-модуля используют его операции, типы и
+`operationsTree`.
 
 ## Удаление override
 
-После исправления OpenAPI:
+После обновления OpenAPI:
 
 1. Перегенерируй `generated` через project script.
-2. Удали исправленные contracts и operations из `overrides`.
-3. Удали их подстановку из `overrides/operations-tree.ts`.
-4. Если overrides больше не осталось, удали каталог и переключи API client на `extensions` или `generated`.
+2. Удали операции и типы, которые теперь корректно предоставляет `generated`.
+3. Удали их подстановку из дерева и barrel-файлов `overrides`.
+4. Если ручных дополнений и исправлений не осталось, удали `overrides` и используй `generated` напрямую.
 
-Публичные группы и имена методов API client при этом не изменяются.
-
-Для SDK package верхний активный слой также должен управлять package exports и точными operation subpaths. Общая
-организация package описана в [`sdk.md`](sdk.md).
+Публичные группы и имена методов API-клиента при этом не изменяются.
