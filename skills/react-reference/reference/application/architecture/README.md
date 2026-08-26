@@ -43,14 +43,17 @@ React-проекта.
 | Состояние React, Zustand и SWR | [`State Management`](../state-management/README.md) |
 | Настройка алиасов в TypeScript и Vite | [`Platform`](../platform/module-aliases.md) |
 
-## Примеры
+## Рабочий пример
 
-Примеры находятся в [`examples/`](../examples/) и показывают согласованные решения, но не задают обязательное дерево
-каждого юнита:
+Запускаемое [`demo-app`](../../../demo-app/) показывает согласованные решения, но не задаёт обязательное дерево каждого
+юнита. Используй конкретного владельца как точку входа:
 
-- [`examples/domains/authentication/`](../examples/domains/authentication/) — доменный контракт Authentication;
-- [`examples/infra/identity-api/`](../examples/infra/identity-api/) — технический API-модуль;
-- [`examples/shared/errors/`](../examples/shared/errors/) — общий контракт неизвестного сбоя;
-- [`examples/routing/`](../examples/routing/) — конфигурация роутера и динамически подключаемые страницы.
+- [`domains/authentication/`](../../../demo-app/src/domains/authentication/) — сессия, вход и выход;
+- [`domains/user/`](../../../demo-app/src/domains/user/) — профиль текущего пользователя;
+- [`infra/backend-api/`](../../../demo-app/src/infra/backend-api/) — общий клиент серверного API;
+- [`shared/errors/`](../../../demo-app/src/shared/errors/) — общий контракт неизвестного сбоя;
+- [`app/router/`](../../../demo-app/src/app/router/) и
+  [`compositions/routes/`](../../../demo-app/src/compositions/routes/) — дерево URL и маршрутные адаптеры;
+- [`compositions/screens/`](../../../demo-app/src/compositions/screens/) — завершённые экранные сценарии.
 
-Не копируй пример целиком без подтверждённой ответственности, потребителей и публичного контракта.
+Не копируй `demo-app` целиком без подтверждённой ответственности, потребителей и публичного контракта.

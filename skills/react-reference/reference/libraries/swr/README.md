@@ -56,7 +56,8 @@ examples/
 - [`use-get-pet/`](examples/hooks/use-get-pet/) — GET hook поверх domain adapter.
 - [`use-get-auth-pet/`](examples/hooks/use-get-auth-pet/) — GET hook со стабильным auth scope в cache key.
 - [`use-order-subscription/`](examples/subscriptions/use-order-subscription/) — typed subscription key, callback и cleanup.
-- Полный путь infra API → domain adapter → SWR hook показан в [`Authentication example`](../../application/examples/domains/authentication/README.md).
+- Полный путь от серверного API через предметный адаптер до SWR-хука показан в
+  [`demo-app`](../../../demo-app/README.md).
 
 Имена API clients, adapters, public facets и доменных моделей в examples условны. Используй фактические public API и TypeScript-сигнатуры проекта.
 

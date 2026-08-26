@@ -1,7 +1,7 @@
 # Маршрутизация в React SPA
 
 Используй React Router Data Router через `createBrowserRouter` и `RouterProvider`. Правила фасета `lazy.ts` и границу
-между `app` и `compositions/pages` определяет
+между `app` и `compositions` определяет
 [`архитектурный профиль`](../architecture/project-profile.md#граница-app-и-compositions).
 Роль отображаемой страницы уточняет документ
 [`Композиционные юниты`](../architecture/units/compositions.md).
@@ -14,10 +14,11 @@
 - вложенностью маршрутов и перенаправлениями;
 - глобальными обработчиками ошибок маршрутов;
 - подключением роутера к React;
-- динамическим импортом публичных фасетов страниц.
+- динамическим импортом публичных фасетов маршрутов.
 
-Группа `compositions/pages` содержит отображаемые проекции маршрутов. Юнит этой группы собирает готовые публичные API,
-но не объявляет URL и не изменяет конфигурацию роутера.
+Группа `compositions/routes` содержит адаптеры React Router. Они связывают дерево URL с экранами, а при необходимости
+проверяют доступ, перенаправляют или подключают `Outlet`. Группа `compositions/screens` содержит завершённые экранные
+сценарии и владеет их разметкой и действиями.
 
 ## Почему Data Router
 
@@ -29,7 +30,7 @@
 - Не используй `loader` и `action` для предметных REST-данных.
 - GET-состояние сервера для отображения получает доменный SWR-hook.
 - Изменение выполняется доменной операцией из обработчика события и синхронизирует GET-кеш SWR.
-- Страница импортирует домены, композиции и UI только через публичные фасеты.
+- Экран импортирует домены, композиции и UI только через публичные фасеты.
 - `domains` и `infra` не импортируют React Router и не выполняют навигацию.
 
 Проверка доступа использует уже опубликованный контракт аутентификации. Она не читает access token и не вызывает
@@ -43,18 +44,26 @@ src/
 ├── app/
 │   └── router/
 │       ├── app-router.tsx
-│       └── route-error-boundary.tsx
+│       ├── route-error-boundary/
+│       └── route-pending/
 └── compositions/
-    └── pages/
+    ├── routes/
+    │   ├── home/
+    │   │   ├── lazy.ts
+    │   │   └── home.route.tsx
+    │   └── account/
+    │       ├── lazy.ts
+    │       └── account.route.tsx
+    └── screens/
         ├── home/
-        │   ├── lazy.ts
-        │   └── home-page.tsx
+        │   ├── index.ts
+        │   └── home.screen.tsx
         └── account/
-            ├── lazy.ts
-            └── account-page.tsx
+            ├── index.ts
+            └── account.screen.tsx
 ```
 
-Конфигурация импортирует только динамические фасеты страниц:
+Конфигурация импортирует только динамические фасеты маршрутов:
 
 ```tsx
 const router = createBrowserRouter([
@@ -64,34 +73,37 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import('compositions/pages/home/lazy'),
+        lazy: () => import('compositions/routes/home/lazy'),
       },
       {
         path: 'account',
-        lazy: () => import('compositions/pages/account/lazy'),
+        lazy: () => import('compositions/routes/account/lazy'),
       },
     ],
   },
 ])
 ```
 
-`lazy.ts` является фасетом юнита страницы и предоставляет ожидаемый React Router экспорт `Component`:
+`lazy.ts` является фасетом маршрутного юнита и предоставляет ожидаемый React Router экспорт `Component`:
 
 ```ts
-export { AccountPage as Component } from './account-page'
+export { AccountRoute as Component } from './account.route'
 ```
 
-Не создавай в `app/router/routes` компоненты страниц. Тонкий файл-адаптер допустим только тогда, когда React Router
-требует форму, которую нельзя предоставить через `lazy.ts`; отображение и предметное поведение в нём не размещаются.
+Маршрутный адаптер подключает экран через его публичный фасет. Не переноси в такой адаптер разметку или предметное
+поведение. Маршрут без экрана допустим для проверки доступа, перенаправления, `Outlet` или области жизни публичного
+`Provider`.
 
-Согласованный пример находится в [`examples/routing/`](../examples/routing/).
+Согласованный пример находится в `demo-app`: [`app-router.tsx`](../../../demo-app/src/app/router/app-router.tsx) владеет
+деревом URL, [`compositions/routes/`](../../../demo-app/src/compositions/routes/) предоставляет маршрутные адаптеры, а
+[`compositions/screens/`](../../../demo-app/src/compositions/screens/) владеет экранными сценариями.
 
 ## Проверка
 
 - Роутер создан через `createBrowserRouter` и подключён через `RouterProvider`.
 - Дерево URL и глобальные ошибки маршрутов принадлежат `app`.
-- Отображаемая страница принадлежит `compositions/pages`.
-- Динамический импорт проходит через `lazy.ts` юнита страницы.
+- Маршрутный адаптер принадлежит `compositions/routes`, экранный сценарий — `compositions/screens`.
+- Динамический импорт проходит через `lazy.ts` маршрутного юнита.
 - REST GET не выполняется через `loader`, а изменение — через `action`.
 - `domains` и `infra` не зависят от React Router.
 - Динамическая загрузка не обходит публичные фасеты юнитов.

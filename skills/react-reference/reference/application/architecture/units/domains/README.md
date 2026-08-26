@@ -50,4 +50,4 @@
 | Публичные модели, операции и граница данных | [`contracts.md`](contracts.md) |
 | Интеграция с внешними источниками и преобразование данных | [`adapters.md`](adapters.md) |
 | Ожидаемые исходы и типизированные исключения | [`errors.md`](errors.md) |
-| Согласованный пример Authentication | [`../../../examples/domains/authentication/`](../../../examples/domains/authentication/) |
+| Согласованный пример Authentication | [`demo-app/src/domains/authentication/`](../../../../../demo-app/src/domains/authentication/) |

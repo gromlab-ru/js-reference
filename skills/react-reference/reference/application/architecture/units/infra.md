@@ -77,9 +77,9 @@ Provider и техническим контрактом цветовой схе�
 | Интеграция темы Mantine | [`Настройка Mantine`](../../../libraries/mantine/configuration.md) |
 | API SVG-спрайта | [`SVG-спрайты`](../../../libraries/svg-sprites.md) |
 
-Пример технического API-модуля находится в
-[`examples/infra/identity-api/`](../../examples/infra/identity-api/). Он показывает одну infra-возможность, но не задаёт
-структуру для остальных технических интеграций.
+Рабочий пример общего клиента серверного API находится в
+[`demo-app/src/infra/backend-api/`](../../../../demo-app/src/infra/backend-api/). Он показывает одну техническую возможность,
+но не задаёт структуру для остальных интеграций.
 
 ## Проверка
 

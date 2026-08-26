@@ -1,0 +1,25 @@
+.root {
+  background: var(--app-color-surface-translucent);
+  backdrop-filter: blur(0.75rem);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  block-size: 100%;
+  gap: var(--mantine-spacing-md);
+}
+
+.brand {
+  flex: 0 0 auto;
+  color: var(--app-color-ink);
+}
+
+.homeLink {
+  display: none;
+
+  @media (--sm) {
+    display: inline;
+  }
+}

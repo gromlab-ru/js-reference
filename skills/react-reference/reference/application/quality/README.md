@@ -12,7 +12,9 @@ Quality объединяет правила обработки failures и пр�
 - Error boundary не заменяет локальное отображение ожидаемой ошибки формы или action.
 - Transport details, DTO и raw source errors не показываются consumer.
 
-Пример общей application error находится в [`examples/shared/errors/`](../examples/shared/errors/).
+Рабочий пример общей ошибки приложения находится в
+[`demo-app/src/shared/errors/`](../../../demo-app/src/shared/errors/). Её отображение на границе маршрутов показывает
+[`RouteErrorBoundary`](../../../demo-app/src/app/router/route-error-boundary/route-error-boundary.tsx).
 
 ## Проверки
 
