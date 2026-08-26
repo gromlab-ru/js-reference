@@ -4,11 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "sprites": "npx --yes @gromlab/svg-sprites@2.1.0 src/infra/app-icons/svg-sprite.config.json",
+    "predev": "npm run sprites",
     "dev": "vite",
     "generate:backend-api": "npx --yes @gromlab/rest-api-codegen@5.2.4 --input ./openapi/backend-api.openapi.json --output ./src/infra/backend-api/generated",
+    "pretypecheck": "npm run sprites",
     "typecheck": "tsc -b",
+    "prebuild": "npm run sprites",
     "build": "tsc -b && vite build",
-    "check": "npm run typecheck && npm run build",
+    "check": "npm run build",
     "preview": "vite preview"
   },
   "browserslist": [

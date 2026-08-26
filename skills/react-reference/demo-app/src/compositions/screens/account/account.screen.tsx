@@ -3,6 +3,7 @@ import { Alert, Avatar, Button, Center, Container, Loader, Paper, Stack, Text, T
 import cl from 'clsx'
 import { useAuthenticationActions } from 'domains/authentication'
 import { useGetCurrentUser } from 'domains/user'
+import { AppIcon } from 'infra/app-icons'
 import styles from './styles/account.module.css'
 import type { AccountScreenProps } from './types/account-screen-props.type'
 
@@ -94,7 +95,13 @@ export const AccountScreen = (props: AccountScreenProps) => {
                   {signOutError}
                 </Alert>
               )}
-              <Button color="red" loading={isSigningOut} onClick={handleSignOut} variant="light">
+              <Button
+                color="red"
+                leftSection={<AppIcon aria-hidden="true" height={18} icon="sign-out" width={18} />}
+                loading={isSigningOut}
+                onClick={handleSignOut}
+                variant="light"
+              >
                 Выйти
               </Button>
             </Stack>

@@ -12,8 +12,22 @@
 }
 
 .brand {
+  display: inline-flex;
   flex: 0 0 auto;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
   color: var(--app-color-ink);
+
+  &:hover,
+  &:focus-visible {
+    .brandIcon {
+      --icon-color-1: var(--mantine-color-violet-6);
+    }
+  }
+}
+
+.brandIcon {
+  --icon-color-1: var(--mantine-color-indigo-6);
 }
 
 .homeLink {
