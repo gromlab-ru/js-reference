@@ -148,7 +148,7 @@ export { ThemeProvider } from './theme-provider'
 ```tsx
 import { RouterProvider } from 'react-router-dom'
 
-import { ThemeProvider } from '@/infra/theme'
+import { ThemeProvider } from 'infra/theme'
 import { appRouter } from './app-router'
 
 /**

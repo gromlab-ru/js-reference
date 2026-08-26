@@ -24,7 +24,7 @@ React consumer
 Infra-фасет может предоставить полный API client:
 
 ```ts
-import { petStoreApi } from '@/infra/pet-store-api'
+import { petStoreApi } from 'infra/pet-store-api'
 
 const petDto = await petStoreApi.pets.getPet({ id })
 ```
@@ -35,7 +35,7 @@ const petDto = await petStoreApi.pets.getPet({ id })
 import {
   getPet,
   petStoreHttpClient,
-} from '@/infra/pet-store-api'
+} from 'infra/pet-store-api'
 
 const petDto = await getPet(petStoreHttpClient, { id })
 ```
@@ -103,7 +103,7 @@ export const useGetPet = (petId: string | null): UseGetPetResponse => {
 React consumer использует hook из фасета домена:
 
 ```ts
-import { useGetPet } from '@/domains/pets'
+import { useGetPet } from 'domains/pets'
 
 const pet = useGetPet(petId)
 ```
@@ -120,7 +120,7 @@ const pet = useGetPet(petId)
 - сценарий, которому не нужны shared cache и automatic revalidation.
 
 ```ts
-import { exportPets } from '@/domains/pets'
+import { exportPets } from 'domains/pets'
 
 const file = await exportPets(filter)
 ```
@@ -132,7 +132,7 @@ const file = await exportPets(filter)
 `POST`, `PUT`, `PATCH` и `DELETE` выполняются через публичные domain adapters:
 
 ```ts
-import { updatePet } from '@/domains/pets'
+import { updatePet } from 'domains/pets'
 
 await updatePet({
   id: petId,

@@ -23,13 +23,13 @@ description: "Использовать при создании и изменен
 | --- | --- |
 | [Architecture](reference/application/architecture/README.md) | Как применить архитектурный профиль проекта, разделить приложение на самостоятельные части, определить место нового кода, открыть нужные возможности другим частям приложения и не создать недопустимые зависимости. |
 | [UI и компоненты](reference/application/ui/README.md) | Как использовать Mantine, организовать файлы и сегменты React-компонента, различить внутренний компонент и компонент-юнит и разместить их в `compositions`, `domains` или `ui`. |
-| [Forms](reference/application/forms/README.md) | Как хранить введённые значения, проверять поля, отправлять данные и показывать ошибки сервера. |
+| [Forms](reference/application/forms/README.md) | Как использовать Mantine и `useForm`, проверять поля, отправлять данные и показывать ошибки операции. |
 | [Styling](reference/application/styling/README.md) | Как стилизовать внешний компонент средствами библиотеки и через CSS Module, настроить начальные общие стили и определить их владельца. |
 | [Icons](reference/application/icons/README.md) | Как выбрать между иконкой библиотеки и собственной SVG, подключить спрайт, задать размеры, цвета и доступное описание. |
 | [State Management](reference/application/state-management/README.md) | Как определить место хранения состояния и выбрать между состоянием React, Zustand и SWR. |
 | [Data Fetching](reference/application/data-fetching/README.md) | Как получать и изменять серверные данные, преобразовывать ответы API, обновлять кеш и принимать данные в реальном времени. |
 | [Routing](reference/application/routing/README.md) | Как описывать маршруты, переходы, вложенные страницы, отложенную загрузку, проверки доступа и ошибки страниц. |
-| [Platform](reference/application/platform/README.md) | Как настроить Vite, переменные окружения, статические файлы, даты и локализацию. |
+| [Platform](reference/application/platform/README.md) | Как настроить Vite, алиасы слоёв, переменные окружения, статические файлы, даты и локализацию. |
 | [Quality](reference/application/quality/README.md) | Как различать ожидаемые ошибки и дефекты приложения, где их обрабатывать и какие проверки запускать после изменения. |
 | [Examples](reference/application/examples/) | Примеры совместного применения нескольких правил. Они не заменяют основные документы и не задают обязательную структуру файлов. |
 

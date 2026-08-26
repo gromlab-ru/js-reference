@@ -28,6 +28,7 @@ React-проекта.
 [`Архитектурный профиль React SPA`](project-profile.md) является единственным владельцем следующих решений:
 
 - фасеты `index.ts` и `lazy.ts`;
+- алиасы `app/*`, `compositions/*`, `domains/*`, `infra/*`, `ui/*` и `shared/*`;
 - общий и профильный словарь сегментов;
 - группы `layouts`, `pages`, `screens` и `widgets`;
 - граница конфигурации маршрутов в `app` и отображаемых страниц в `compositions/pages`.
@@ -40,6 +41,7 @@ React-проекта.
 | Маршруты и динамические страницы | [`Маршрутизация`](../routing/README.md) |
 | Получение и изменение данных | [`Data Fetching`](../data-fetching/README.md) |
 | Состояние React, Zustand и SWR | [`State Management`](../state-management/README.md) |
+| Настройка алиасов в TypeScript и Vite | [`Platform`](../platform/module-aliases.md) |
 
 ## Примеры
 

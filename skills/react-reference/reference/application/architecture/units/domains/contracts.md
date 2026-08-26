@@ -21,8 +21,8 @@ import {
   getCurrentUser,
   signIn,
   useGetCurrentUser,
-} from '@/domains/authentication'
-import type { CurrentUser } from '@/domains/authentication'
+} from 'domains/authentication'
+import type { CurrentUser } from 'domains/authentication'
 ```
 
 GET-операция публикуется вместе с GET-хуком. Хук является стандартным способом получить серверное состояние для

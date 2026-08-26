@@ -64,11 +64,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import('@/compositions/pages/home/lazy'),
+        lazy: () => import('compositions/pages/home/lazy'),
       },
       {
         path: 'account',
-        lazy: () => import('@/compositions/pages/account/lazy'),
+        lazy: () => import('compositions/pages/account/lazy'),
       },
     ],
   },

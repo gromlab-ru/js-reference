@@ -13,7 +13,8 @@ Mantine является основной библиотекой компоне�
 3. Создай технического владельца темы `infra/theme` и подключи его на границе приложения по
    [`configuration.md`](configuration.md).
 4. Используй компоненты и публичные переменные Mantine по [`usage.md`](usage.md).
-5. Проверь типы, производственную сборку, светлую и тёмную цветовые схемы, если приложение поддерживает обе.
+5. Для формы установи `@mantine/form` и следуй маршруту [`application/forms`](../../application/forms/README.md).
+6. Проверь типы, производственную сборку, светлую и тёмную цветовые схемы, если приложение поддерживает обе.
 
 ## Ответственность документов
 
@@ -22,12 +23,14 @@ Mantine является основной библиотекой компоне�
 | Установка `@mantine/core` и `@mantine/hooks` | [`setup.md`](setup.md) |
 | Стили Mantine, `createTheme`, `MantineProvider` и `infra/theme` | [`configuration.md`](configuration.md) |
 | Импорты компонентов, свойства, CSS-переменные и границы | [`usage.md`](usage.md) |
+| Формы и `useForm` | [`application/forms`](../../application/forms/README.md) |
 | Выбор между HTML, Mantine и собственным компонентом | [`application/ui`](../../application/ui/README.md) |
 | Оформление библиотечного компонента через CSS Module | [`application/styling`](../../application/styling/README.md) |
 
 ## Основные границы
 
 - Компоненты импортируются напрямую из `@mantine/core`, а не через проектный файл повторных экспортов.
+- `useForm` импортируется напрямую из `@mantine/form` и используется по правилам области Forms.
 - Общая тема, `MantineProvider` и управление цветовой схемой принадлежат `infra/theme` по правилам React SPA.
 - `app` подключает проектный `ThemeProvider`, но не владеет настройками Mantine.
 - `infra/theme` не создаёт обёртки над отдельными компонентами Mantine.

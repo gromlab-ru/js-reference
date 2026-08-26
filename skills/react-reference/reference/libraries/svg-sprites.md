@@ -128,7 +128,7 @@ npm install --save-dev @gromlab/svg-sprites
 import { SpriteViewer } from '@gromlab/svg-sprites/react'
 
 const sources = [
-  () => import('@/infra/app-icons/.svg-sprite/svg-sprite.manifest.js'),
+  () => import('infra/app-icons/.svg-sprite/svg-sprite.manifest.js'),
 ] as const
 
 export function Component() {
@@ -147,7 +147,7 @@ export const appRouter = createBrowserRouter([
     ? [
         {
           path: '/svg-sprites',
-          lazy: () => import('@/compositions/pages/svg-sprites/lazy'),
+          lazy: () => import('compositions/pages/svg-sprites/lazy'),
         },
       ]
     : []),

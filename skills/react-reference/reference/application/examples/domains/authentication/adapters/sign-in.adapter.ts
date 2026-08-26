@@ -1,8 +1,8 @@
 import {
   identityApi,
   setAccessToken
-} from '@/infra/identity-api'
-import { toApplicationDefect } from '@/shared/errors'
+} from 'infra/identity-api'
+import { toApplicationDefect } from 'shared/errors'
 
 import {
   createAccountLockedError,

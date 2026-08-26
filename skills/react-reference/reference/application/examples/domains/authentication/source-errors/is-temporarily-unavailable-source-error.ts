@@ -1,4 +1,4 @@
-import { isIdentityApiError } from '@/infra/identity-api'
+import { isIdentityApiError } from 'infra/identity-api'
 
 /**
  * Распознаёт временную недоступность Identity API.

@@ -2,8 +2,8 @@ import {
   clearAccessToken,
   getAccessToken,
   identityApi
-} from '@/infra/identity-api'
-import { toApplicationDefect } from '@/shared/errors'
+} from 'infra/identity-api'
+import { toApplicationDefect } from 'shared/errors'
 
 import { isNotAuthenticatedSourceError } from '../source-errors/is-not-authenticated-source-error'
 

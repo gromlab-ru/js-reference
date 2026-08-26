@@ -55,7 +55,7 @@ export { ApplicationDefect, toApplicationDefect } from './application-defect'
 функций и типов. Потребители импортируют юнит `shared` через фасет, как и любой другой юнит:
 
 ```ts
-import { toApplicationDefect } from '@/shared/errors'
+import { toApplicationDefect } from 'shared/errors'
 ```
 
 ## Проверка

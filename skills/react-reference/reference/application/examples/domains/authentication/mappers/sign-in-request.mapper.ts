@@ -1,4 +1,4 @@
-import type { SignInRequestDto } from '@/infra/identity-api'
+import type { SignInRequestDto } from 'infra/identity-api'
 
 import type { SignInInput } from '../types/sign-in-input.type'
 

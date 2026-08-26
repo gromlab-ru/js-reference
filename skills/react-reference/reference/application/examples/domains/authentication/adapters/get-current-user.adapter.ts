@@ -1,8 +1,8 @@
 import {
   getCurrentUser as getCurrentUserOperation,
   identityHttpClient
-} from '@/infra/identity-api'
-import { toApplicationDefect } from '@/shared/errors'
+} from 'infra/identity-api'
+import { toApplicationDefect } from 'shared/errors'
 
 import { createAuthenticationUnavailableError } from '../errors/authentication-error.factory'
 import { mapCurrentUserDto } from '../mappers/current-user.mapper'

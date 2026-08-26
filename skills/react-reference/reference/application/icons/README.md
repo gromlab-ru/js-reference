@@ -25,7 +25,7 @@ Project-owned sprite обычно принадлежит infra unit owner как
 ## Generated component
 
 ```tsx
-import { AppIcon } from '@/infra/app-icons'
+import { AppIcon } from 'infra/app-icons'
 
 <AppIcon
   icon="search"

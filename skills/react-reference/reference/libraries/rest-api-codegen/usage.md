@@ -3,7 +3,7 @@
 Импортируй API-клиент и вызывай его методы:
 
 ```ts
-import { petStoreApi } from '@/infra/pet-store-api'
+import { petStoreApi } from 'infra/pet-store-api'
 
 const pet = await petStoreApi.pets.getPet({ id: '42' })
 ```
@@ -63,7 +63,7 @@ async function loadPet(id: string) {
 import {
   getPet,
   httpClient,
-} from '@/infra/pet-store-api'
+} from 'infra/pet-store-api'
 
 const pet = await getPet(httpClient, { id: '42' })
 ```

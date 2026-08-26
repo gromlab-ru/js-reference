@@ -124,7 +124,7 @@ export * from './generated/operations'
 ### 5. Используй клиент
 
 ```ts
-import { petStoreApi } from '@/infra/pet-store-api'
+import { petStoreApi } from 'infra/pet-store-api'
 
 const pet = await petStoreApi.pets.getPet({ id: '42' })
 ```

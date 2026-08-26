@@ -9,15 +9,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import('@/compositions/pages/home/lazy')
+        lazy: () => import('compositions/pages/home/lazy')
       },
       {
         path: 'account',
-        lazy: () => import('@/compositions/pages/account/lazy')
+        lazy: () => import('compositions/pages/account/lazy')
       },
       {
         path: 'sign-in',
-        lazy: () => import('@/compositions/pages/sign-in/lazy')
+        lazy: () => import('compositions/pages/sign-in/lazy')
       }
     ]
   }
