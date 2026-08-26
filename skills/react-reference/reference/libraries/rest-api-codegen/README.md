@@ -37,7 +37,8 @@ extensions
 - Размещай API-клиенты только в `src/infra`.
 - Для каждого внешнего API создавай отдельный модуль `src/infra/<name>-api`.
 - Не изменяй файлы внутри `generated`.
-- Импортируй клиент, HTTP-клиент, операции и типы через публичные экспорты API-модуля.
+- Публикуй через фасет API-модуля клиент, нужные операции и типы. Публикуй `HttpClient`, только если у него есть внешний
+  потребитель.
 
 ## Быстрый старт
 
@@ -46,7 +47,6 @@ extensions
 ```text
 src/infra/pet-store-api/
 ├── generated/
-├── transport.ts
 ├── pet-store-api.ts
 └── index.ts
 ```
@@ -77,31 +77,20 @@ npm run generate:pet-store-api
 
 Подробнее: [`Автоматическая генерация`](automatic-generation.md).
 
-### 2. Настрой HTTP-клиент
+### 2. Настрой HTTP-клиент и собери полный API-клиент
 
-Создай `transport.ts`:
-
-```ts
-import { HttpClient } from './generated'
-
-export const httpClient = new HttpClient({
-  baseUrl: 'https://api.example.com',
-})
-```
-
-Подробнее о настройках: [`HTTP transport`](transport.md).
-
-### 3. Собери API-клиент
-
-Создай `pet-store-api.ts`:
+Если приложение использует один полный клиент и одну политику транспорта, создай оба объекта в `pet-store-api.ts`:
 
 ```ts
 import {
   createApiClient,
+  HttpClient,
   operationsTree,
 } from './generated'
 
-import { httpClient } from './transport'
+const httpClient = new HttpClient({
+  baseUrl: 'https://api.example.com',
+})
 
 export const petStoreApi = createApiClient(
   httpClient,
@@ -109,19 +98,20 @@ export const petStoreApi = createApiClient(
 )
 ```
 
-Полный и частичный варианты описаны в разделе [`Сборка API-клиента`](api-client.md).
+Настройки описаны в разделе [`HTTP transport`](transport.md), полный и частичный варианты — в разделе
+[`Сборка API-клиента`](api-client.md). Выноси transport в отдельный файл только для нескольких клиентов или разных
+политик транспорта.
 
-### 4. Экспортируй клиент, операции и типы
+### 3. Экспортируй клиент, операции и типы
 
 ```ts
 export { petStoreApi } from './pet-store-api'
-export { httpClient } from './transport'
 
 export type * from './generated/data-contracts'
 export * from './generated/operations'
 ```
 
-### 5. Используй клиент
+### 4. Используй клиент
 
 ```ts
 import { petStoreApi } from 'infra/pet-store-api'
@@ -130,6 +120,10 @@ const pet = await petStoreApi.pets.getPet({ id: '42' })
 ```
 
 Другие варианты вызова показаны в разделе [`Использование API-клиента`](usage.md).
+
+Рабочий пример с JWT и обработкой защищённого `401` находится в
+[`demo-app/src/infra/backend-api/backend-api.ts`](../../../demo-app/src/infra/backend-api/backend-api.ts). Он сообщает
+общий статус через [`infra/app-store`](../../../demo-app/src/infra/app-store/), но не управляет SWR-кешем.
 
 ## Карта документации
 
@@ -147,8 +141,11 @@ const pet = await petStoreApi.pets.getPet({ id: '42' })
 - [Репозиторий и официальная документация](https://github.com/gromlab-ru/rest-api-codegen)
 - [Agent skill `rest-api-codegen-ru`](../../../../../.agents/skills/rest-api-codegen-ru/SKILL.md)
 
-Используй доступный в проекте agent skill `rest-api-codegen-ru`. Если его нет, установи командой:
+Используй доступный агенту skill `rest-api-codegen-ru`. Если его нет, установи командой:
 
 ```bash
-npx skills add gromlab-ru/rest-api-codegen-ru
+npx skills add gromlab-ru/rest-api-codegen
 ```
+
+Если агент не может устанавливать или загружать skills, используй документацию публичного репозитория как запасной
+источник. Не останавливай настройку клиента и не придумывай отсутствующие параметры библиотеки.

@@ -15,10 +15,13 @@
 ```ts
 import {
   createApiClient,
+  HttpClient,
   operationsTree,
 } from './generated'
 
-import { httpClient } from './transport'
+const httpClient = new HttpClient({
+  baseUrl: 'https://api.example.com',
+})
 
 export const petStoreApi = createApiClient(
   httpClient,
@@ -36,6 +39,13 @@ const pet = await petStoreApi.pets.getPet({
 ```
 
 Используй полный клиент, если приложению нужна большая часть API.
+
+Если у приложения один полный клиент и одна политика транспорта, храни настроенный `HttpClient` и вызов `createApiClient`
+в одном `<name>-api.ts`. Отдельный `transport.ts` в этом случае не добавляет границу ответственности. Эталон:
+[`demo-app/src/infra/backend-api/backend-api.ts`](../../../demo-app/src/infra/backend-api/backend-api.ts).
+
+Выноси `httpClient` отдельно, когда его должны разделять несколько полных или частичных клиентов либо когда одному API
+нужны разные политики транспорта для разных сред выполнения.
 
 ## Частичный клиент
 

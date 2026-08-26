@@ -60,8 +60,8 @@ use-get-<name>/
 
 | Экспортируемая функция | `<name>` | Папка hook |
 | --- | --- | --- |
-| `useGetPet` | `pet` | `use-get-pet/` |
-| `useGetAuthPet` | `auth-pet` | `use-get-auth-pet/` |
+| `useGetCurrentSession` | `current-session` | `use-get-current-session/` |
+| `useGetCurrentUser` | `current-user` | `use-get-current-user/` |
 | `useGetPet` домена | `pet` | `pet-domain/hooks/use-get-pet/` |
 
 - Hook именуется через `useGet...`.
@@ -70,7 +70,8 @@ use-get-<name>/
 - Hook-файл экспортирует только hook.
 - Внешний consumer получает hook и adapter через фасет домена, а не глубокий импорт.
 
-Полный простой пример находится в [`examples/hooks/use-get-pet/`](examples/hooks/use-get-pet/).
+Простой пример без параметров находится в
+[`demo-app/current-session`](../../../demo-app/src/domains/authentication/hooks/use-get-current-session/).
 
 ## Cache key
 
@@ -178,7 +179,8 @@ API очистки cache меняется между версиями SWR. Не 
 Не используй `keepPreviousData` при переходе между auth scopes: предыдущие пользовательские данные не должны
 отображаться после смены identity.
 
-Полный пример находится в [`examples/hooks/use-get-auth-pet/`](examples/hooks/use-get-auth-pet/).
+Рабочий пример приватного ключа находится в
+[`demo-app/current-user`](../../../demo-app/src/domains/user/hooks/use-get-current-user/).
 
 ## Fetcher и response
 
@@ -195,7 +197,13 @@ export const useGetPet = (id: string | null): UseGetPetResponse => {
 
 Не создавай в fetcher самостоятельный `fetch`, `HttpClient`, API client, URL, auth headers или общую обработку HTTP-ошибок. Их предоставляет готовый infra API-модуль внутри domain adapter.
 
-Domain hook может вернуть стандартный `SWRResponse` либо собственный contract, если должен отделить typed domain error от unknown defect. Не публикуй через него DTO или source error.
+Доменный хук возвращает стандартный `SWRResponse<Data, OperationError>`. Не переименовывай и не удаляй поля ответа, не
+добавляй отдельное поле `defect`. Потребитель читает типизированную доменную ошибку из стандартного `error`, а для
+повторного запроса или обновления кеша использует стандартный `mutate`.
+
+```ts
+export type UseGetPetResponse = SWRResponse<GetPetData, GetPetError>
+```
 
 ## Domain adapter
 
@@ -205,10 +213,18 @@ Domain hook может вернуть стандартный `SWRResponse` ли�
 const fetcher = ([, petId]: GetPetKey) => getPet(petId)
 ```
 
-Adapter, mappers и интерпретация source errors остаются внутри домена, а технический HTTP transport принадлежит `infra`. SWR отвечает только за key, cache и React lifecycle.
+Адаптер, преобразования и интерпретация ошибок источника остаются внутри домена, а технический HTTP-транспорт принадлежит
+`infra`. SWR отвечает только за ключ, кеш и жизненный цикл React.
 
-Успешный domain result становится `data`. Разделение typed domain error и unknown defect выполняй по
-[`failure policy`](../../application/quality/failure-handling.md), не определяя новую error model внутри SWR hook.
+Успешный предметный результат становится `data`. GET-адаптер до передачи управления SWR преобразует каждый неуспешный
+исход в одну из ошибок своей операции, включая запасную ошибку временной недоступности. Хук не проверяет ошибку повторно
+и не создаёт новую модель ошибок. Полная классификация определена в правилах
+[`доменных ошибок`](../../application/architecture/units/domains/errors.md#граница-get-адаптера-для-swr).
+
+Рабочий контракт стандартного ответа показан в типах
+[`useGetCurrentSession`](../../../demo-app/src/domains/authentication/hooks/use-get-current-session/types/use-get-current-session.type.ts)
+и
+[`useGetCurrentUser`](../../../demo-app/src/domains/user/hooks/use-get-current-user/types/use-get-current-user.type.ts).
 
 Domain hook принадлежит доменному юниту вместе с его contract, errors, mappers и adapters. Внешние consumers получают hook через public facet домена; не размещай его во внешнем общем каталоге hooks.
 
@@ -258,6 +274,7 @@ closure.
 - Remote data не копируются в другой client store.
 - Mutation выполняется через public domain adapter вне SWR.
 - Mutation синхронизирует связанные GET keys.
-- Доменный cache не содержит DTO и source errors; hook отделяет typed domain error от unknown defect.
+- Доменный кеш не содержит DTO и ошибок источника; GET-адаптер полностью классифицирует ошибки до SWR.
+- Хук возвращает стандартный `SWRResponse`, включая `error` и `mutate`.
 - Hook не создаёт transport, API client или REST operation.
 - `dedupingInterval` не описан как TTL: он только подавляет повторные запросы внутри интервала.

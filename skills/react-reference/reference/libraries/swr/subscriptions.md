@@ -19,6 +19,10 @@ Subscription хранит последнее значение, а не очер�
 
 ## Базовый hook
 
+В `demo-app` пока нет реализации подписок. Следующий встроенный пример является нормативным шаблоном, а не ссылкой на
+проверяемый сценарий демо. Перед применением сверь его с API установленной версии SWR и фактическим сокет-транспортом
+проекта.
+
 Key идентифицирует класс события, ресурс и стабильную auth identity:
 
 ```ts
@@ -69,9 +73,6 @@ export const useOrderSubscription = (
 ```
 
 Domain subscription adapter скрывает mapper, source errors и технический transport. Внутри него удаляй тот же handler, который был передан transport. Не используй broad `off(event)` и не отключай shared connection при unmount одного hook.
-
-Полный пример находится в
-[`examples/subscriptions/use-order-subscription/`](examples/subscriptions/use-order-subscription/).
 
 ## Semantics SWR
 

@@ -26,39 +26,33 @@
 }
 ```
 
-`paths` сообщает TypeScript, какой исходный файл соответствует импорту. Эта настройка сама не изменяет разрешение
-модулей во время сборки, поэтому тот же набор алиасов требуется Vite.
+`paths` является единственным списком алиасов проекта. TypeScript использует его при проверке исходного кода, а Vite 8
+читает тот же список через `resolve.tsconfigPaths`.
 
 ## Vite
 
-Настрой алиасы в `vite.config.ts` через абсолютные пути от файла конфигурации:
+В Vite 8 включи чтение `paths` из конфигурации TypeScript:
 
 ```ts
-import { fileURLToPath, URL } from 'node:url'
-
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: {
-      app: fileURLToPath(new URL('./src/app', import.meta.url)),
-      compositions: fileURLToPath(new URL('./src/compositions', import.meta.url)),
-      domains: fileURLToPath(new URL('./src/domains', import.meta.url)),
-      infra: fileURLToPath(new URL('./src/infra', import.meta.url)),
-      ui: fileURLToPath(new URL('./src/ui', import.meta.url)),
-      shared: fileURLToPath(new URL('./src/shared', import.meta.url))
-    }
+    tsconfigPaths: true
   }
 })
 ```
 
-Не используй относительный путь вроде `./src/domains` как значение замены Vite: разрешение такого пути зависит от
-контекста импортирующего файла. `fileURLToPath(new URL(..., import.meta.url))` создаёт устойчивый абсолютный путь.
+Так TypeScript, Vite и инструменты на основе его конфигурации используют один список. Не устанавливай плагин чтения
+`tsconfig` и не добавляй параллельный `resolve.alias`, если проект использует Vite 8.
 
-Если проект уже получает алиасы из `tsconfig` через установленный плагин, не добавляй второй параллельный список в
-Vite. Используй один существующий механизм и проверь, что он работает для запуска и производственной сборки.
+Для более ранней версии Vite используй уже принятый проектом плагин чтения `tsconfig` либо ручной `resolve.alias` с
+абсолютными путями. Не меняй рабочий механизм только ради перехода на другой способ настройки.
+
+Рабочая конфигурация находится в [`demo-app/vite.config.ts`](../../../demo-app/vite.config.ts), а единый список путей —
+в [`demo-app/tsconfig.app.json`](../../../demo-app/tsconfig.app.json).
 
 ## Использование
 
@@ -84,7 +78,7 @@ import { getCurrentUser } from 'domains/authentication/adapters/get-current-user
 
 ## Другие инструменты
 
-- Vitest использует `resolve.alias` из Vite, если не переопределяет конфигурацию отдельно.
+- Vitest использует настройки разрешения модулей из Vite, если не переопределяет конфигурацию отдельно.
 - Настрой отдельное разрешение путей ESLint только тогда, когда используемое правило импортов не понимает пути
   TypeScript.
 - Не дублируй алиасы в инструментах, которые уже читают конфигурацию TypeScript или Vite.
@@ -96,6 +90,7 @@ import { getCurrentUser } from 'domains/authentication/adapters/get-current-user
 3. Выполни производственную сборку.
 4. Запусти тесты, которые импортируют код через алиасы.
 5. Убедись, что IDE открывает исходный файл по импорту и не предлагает путь с `@/`.
+6. Убедись, что алиасы объявлены только в `paths`, если проект использует Vite 8.
 
 Ошибку разрешения только в одном инструменте исправляй в его конфигурации. Не заменяй архитектурный импорт глубоким
 относительным путём ради обхода настройки.

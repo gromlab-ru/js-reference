@@ -1,38 +1,39 @@
-# Data fetching в React
+# Получение данных в React
 
-Этот раздел является основной инструкцией по получению и изменению удалённых данных в browser-only React SPA. Он не выбирает хранилище client state. REST используется как базовый протокол обмена между приложением и сервером, `@gromlab/rest-api-codegen` предоставляет технический HTTP contract, домен владеет предметным contract, а SWR связывает GET-данные с React lifecycle.
+Этот раздел является основной инструкцией по получению и изменению удалённых данных в React SPA, работающем только в браузере. Он не выбирает хранилище клиентского состояния. REST используется как базовый протокол обмена между приложением и сервером, `@gromlab/rest-api-codegen` предоставляет технический HTTP-контракт, домен владеет предметным контрактом, а SWR связывает GET-данные с жизненным циклом React.
 
 ```text
 REST API
 → infra API-модуль
-→ domain adapter
-→ domain hook или публичный adapter
-→ React consumer
+→ доменный адаптер
+→ доменный хук или публичный адаптер
+→ React-потребитель
 ```
 
-Каждый шаг имеет одного владельца. Не переноси transport policy в домен, mapping в React component или cache lifecycle в API client.
+Каждый шаг имеет одного владельца. Не переноси правила транспорта в домен, преобразование данных в React-компонент или управление кешем в API-клиент.
 
 ## Порядок работы
 
 1. Определи домен, владеющий запрашиваемыми или изменяемыми предметными данными.
 2. Найди существующий infra API-модуль сервиса; не создавай второй transport или client.
-3. Зафиксируй domain input, result и ожидаемые errors операции.
-4. Создай domain adapter поверх готовой REST operation или метода API client.
-5. Опубликуй adapter через фасет домена.
-6. Для GET server state, участвующего в React render, создай и опубликуй SWR hook поверх GET adapter.
-7. Для imperative GET или mutation вызывай публичный domain adapter.
-8. После mutation синхронизируй затронутый GET-cache в явном domain lifecycle owner.
+3. Зафиксируй предметные входные данные, результат и ожидаемые ошибки операции.
+4. Создай доменный адаптер поверх готовой REST-операции или метода API-клиента.
+5. Опубликуй адаптер через фасет домена.
+6. Для серверных GET-данных, участвующих в отображении React, создай и опубликуй SWR-хук поверх GET-адаптера.
+7. Для императивного GET или изменяющей операции вызывай публичный доменный адаптер.
+8. После изменяющей операции синхронизируй затронутый GET-кеш в явном владельце жизненного цикла домена.
+9. Если демонстрационное приложение должно работать без внешнего сервера, добавь автономную имитацию API по правилам [`api-mocking.md`](api-mocking.md).
 
 ## Выбор API
 
 | Потребность | Публичный API домена | Механизм |
 | --- | --- | --- |
-| GET-данные участвуют в React render | GET hook | `useSWR` поверх GET adapter |
-| Императивный GET, download или export | GET adapter | Обычный async-вызов без SWR cache |
-| `POST`, `PUT`, `PATCH`, `DELETE` | Mutation adapter | Обычный async-вызов |
-| GET-cache после mutation | Domain action/hook или другой lifecycle owner | Revalidation либо контролируемое cache update |
-| Последний realtime snapshot | Subscription hook домена | `useSWRSubscription` поверх готового transport |
-| Connection, reconnect и protocol | Фасет infra-юнита | Socket transport или SDK |
+| GET-данные участвуют в отображении React | GET-хук | `useSWR` поверх GET-адаптера |
+| Императивный GET, скачивание или экспорт | GET-адаптер | Обычный асинхронный вызов без кеша SWR |
+| `POST`, `PUT`, `PATCH`, `DELETE` | Адаптер изменяющей операции | Обычный асинхронный вызов |
+| GET-кеш после изменяющей операции | Доменное действие, хук или другой владелец жизненного цикла | Повторный запрос либо управляемое обновление кеша |
+| Последний снимок данных в реальном времени | Доменный хук подписки | `useSWRSubscription` поверх готового транспорта |
+| Соединение, повторное подключение и протокол | Фасет инфраструктурного юнита | Сокет-транспорт или SDK |
 | Обязательная обработка каждого события | Контракт владельца события | Queue, reducer или специализированный event store |
 
 Приложение выбирает подходящий публичный API домена по сценарию, но не обходит домен ради прямого вызова предметной REST operation.
@@ -41,31 +42,33 @@ REST API
 
 | Вопрос | Источник правил |
 | --- | --- |
-| Domain types, adapters и публичный фасет | [`architecture/units/domains/README.md`](../architecture/units/domains/README.md) |
-| Mapping source contract | [`architecture/units/domains/adapters.md`](../architecture/units/domains/adapters.md) |
-| Domain errors и defects | [`architecture/units/domains/errors.md`](../architecture/units/domains/errors.md) |
+| Доменные типы, адаптеры и публичный фасет | [`architecture/units/domains/README.md`](../architecture/units/domains/README.md) |
+| Преобразование внешнего контракта | [`architecture/units/domains/adapters.md`](../architecture/units/domains/adapters.md) |
+| Доменные ошибки и неожиданные сбои | [`architecture/units/domains/errors.md`](../architecture/units/domains/errors.md) |
 | Граница технического API-модуля | [`architecture/units/infra.md`](../architecture/units/infra.md) |
 | Практический REST lifecycle | [`rest.md`](rest.md) |
+| Автономная имитация REST API | [`api-mocking.md`](api-mocking.md) |
 | Realtime lifecycle | [`realtime.md`](realtime.md) |
 | Создание REST client | [`@gromlab/rest-api-codegen`](../../libraries/rest-api-codegen/README.md) |
 | SWR keys, cache и revalidation | [`SWR`](../../libraries/swr/README.md) |
 
 ## Границы
 
-- React consumer предметных данных импортирует только публичный фасет домена.
-- Domain adapter не публикует DTO, generated types и source errors.
-- SWR hook не создаёт `HttpClient`, API client или собственный `fetch`.
-- API client не содержит domain mapping и не управляет React cache.
-- Mutation adapter не зависит от SWR и может вызываться вне React.
-- Server state не копируется в отдельный client store без самостоятельной клиентской семантики. Правила выбора состояния находятся в [`State management`](../state-management/README.md).
-- Новый REST client или transport не добавляется параллельно существующему без migration boundary.
+- React-потребитель предметных данных импортирует только публичный фасет домена.
+- Доменный адаптер не публикует DTO, созданные генератором типы и ошибки источника.
+- SWR-хук не создаёт `HttpClient`, API-клиент или собственный `fetch`.
+- API-клиент не содержит предметное преобразование данных и не управляет кешем React.
+- Адаптер изменяющей операции не зависит от SWR и может вызываться вне React.
+- Серверное состояние не копируется в отдельное клиентское хранилище без самостоятельной клиентской семантики. Правила выбора состояния находятся в [`State management`](../state-management/README.md).
+- Новый REST-клиент или транспорт не добавляется параллельно существующему без явной границы миграции.
+- Имитация API для автономного демо не выдаётся за способ реализации рабочего сервера.
 
 ## Проверка
 
 - У данных определён домен-владелец.
-- REST-вызов проходит через существующий infra API-модуль.
-- Domain adapter принимает и возвращает только domain contract.
-- GET для render доступен через публичный domain hook.
-- Imperative GET и mutation доступны через публичные domain adapters.
-- После mutation определена синхронизация связанных GET keys.
-- Consumer не знает DTO, source errors, URL, auth и transport policy.
+- REST-вызов проходит через существующий инфраструктурный API-модуль.
+- Доменный адаптер принимает и возвращает только предметный контракт.
+- GET для отображения доступен через публичный доменный хук.
+- Императивный GET и изменяющие операции доступны через публичные доменные адаптеры.
+- После изменяющей операции определена синхронизация связанных GET-ключей.
+- Потребитель не знает DTO, ошибки источника, URL, авторизацию и правила транспорта.

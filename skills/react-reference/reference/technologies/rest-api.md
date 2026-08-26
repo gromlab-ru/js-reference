@@ -25,6 +25,11 @@ getPet(petStoreHttpClient, { id })
 
 Standalone operation использует тот же transport и допустима для уменьшения состава lazy chunk. Создавать новый `HttpClient` или дублировать URL, auth и error policy в domain adapter либо React hook нельзя.
 
+Если приложение использует один полный клиент и одну политику транспорта, размещай настроенный `HttpClient` и
+`createApiClient` в одном `<name>-api.ts`. Отдельный transport нужен только нескольким клиентам или разным политикам одного
+API. Эталон этой структуры —
+[`demo-app/src/infra/backend-api/backend-api.ts`](../../demo-app/src/infra/backend-api/backend-api.ts).
+
 ## Граница приложения
 
 REST source contract не является предметным контрактом приложения. Domain adapter преобразует domain input в source request, response DTO в domain result, а известную source error — в стабильную domain error.
@@ -41,10 +46,24 @@ React consumer
 
 Полный порядок выбора владельца, создания adapter и синхронизации cache описан в [`REST data fetching`](../application/data-fetching/rest.md). Этот технологический документ не заменяет архитектурные правила домена.
 
+## Потеря авторизации
+
+Для `401` от защищённой операции HTTP-транспорт удаляет access token и синхронно сообщает статус `unauthenticated` через
+ограниченный [`infra/app-store`](../../demo-app/src/infra/app-store/). `AuthGuard` подписывается на статус и сразу закрывает
+защищённый UI. Владелец домена авторизации затем очищает запись текущей сессии и приватные SWR-ключи.
+
+Не связывай HTTP-транспорт со SWR. Он различает защищённый HTTP-запрос и сообщает технический статус, но не знает
+предметный состав сессии и приватного кеша. Эталонное разделение ответственности показано в
+[`backend-api.ts`](../../demo-app/src/infra/backend-api/backend-api.ts),
+[`auth-guard.tsx`](../../demo-app/src/domains/authentication/ui/auth-guard/auth-guard.tsx) и
+[`authentication-provider.tsx`](../../demo-app/src/domains/authentication/providers/authentication-provider.tsx).
+
 ## Границы
 
 - React consumer предметных данных не импортирует infra API client или REST operation.
 - Domain adapter не публикует DTO и source errors.
 - Infra API-модуль не импортирует domain types и не управляет SWR cache.
+- Защищённый `401` переводится в общий статус приложения, но очисткой сессии и приватного кеша владеет домен
+  авторизации.
 - SWR не создаёт transport и не используется для mutations.
 - Mutation и последующая cache synchronization остаются разными ответственностями.

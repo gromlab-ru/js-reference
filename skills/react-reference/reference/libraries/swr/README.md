@@ -44,21 +44,15 @@ SWR не создаёт HTTP transport, API client и REST operations. Их пр
 
 ## Примеры
 
-```text
-examples/
-├── hooks/
-│   ├── use-get-pet/
-│   └── use-get-auth-pet/
-└── subscriptions/
-    └── use-order-subscription/
-```
+Запускаемый `demo-app` является источником актуальных GET-примеров:
 
-- [`use-get-pet/`](examples/hooks/use-get-pet/) — GET hook поверх domain adapter.
-- [`use-get-auth-pet/`](examples/hooks/use-get-auth-pet/) — GET hook со стабильным auth scope в cache key.
-- [`use-order-subscription/`](examples/subscriptions/use-order-subscription/) — typed subscription key, callback и cleanup.
-- Полный путь от серверного API через предметный адаптер до SWR-хука показан в
-  [`demo-app`](../../../demo-app/README.md).
+- [`current-session`](../../../demo-app/src/domains/authentication/hooks/use-get-current-session/) показывает публичные
+  данные, стандартный `SWRResponse`, поле `error` и общий ключ сессии;
+- [`current-user`](../../../demo-app/src/domains/user/hooks/use-get-current-user/) показывает приватный ключ со стабильным
+  `userId`, условный запуск и тот же стандартный `SWRResponse`;
+- [полный сценарий](../../../demo-app/README.md) связывает OpenAPI, API-клиент, предметные адаптеры, SWR и автономный MSW.
 
-Имена API clients, adapters, public facets и доменных моделей в examples условны. Используй фактические public API и TypeScript-сигнатуры проекта.
+В `demo-app` пока нет реализации подписок. Нормативный встроенный пример и правила очистки находятся в
+[`subscriptions.md`](subscriptions.md); не считай его подтверждённым запускаемым сценарием демо.
 
 Для API SWR, не описанного этими референсами, используй официальную [документацию SWR](https://swr.vercel.app/).

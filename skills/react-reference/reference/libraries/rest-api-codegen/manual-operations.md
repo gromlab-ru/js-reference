@@ -32,7 +32,6 @@ npm install @gromlab/rest-api-codegen
 │   │   └── index.ts
 │   ├── operations-tree.ts
 │   └── index.ts
-├── transport.ts
 └── <api-name>.ts
 ```
 
@@ -101,19 +100,24 @@ export const operationsTree = {
 export type OperationsTree = typeof operationsTree
 ```
 
-API-клиент использует `createApiClient` из package и `operationsTree` из `extensions`:
+Если приложение использует один полный клиент и одну политику транспорта, API-клиент создаёт `HttpClient` и использует
+`operationsTree` из `extensions` в одном `<api-name>.ts`:
 
 ```ts
-import { createApiClient } from '@gromlab/rest-api-codegen'
-
+import { createApiClient, HttpClient } from '@gromlab/rest-api-codegen'
 import { operationsTree } from './extensions'
-import { httpClient } from './transport'
+
+const httpClient = new HttpClient({
+  baseUrl: 'https://api.example.com'
+})
 
 export const petStoreApi = createApiClient(
   httpClient,
   operationsTree,
 )
 ```
+
+Выноси транспорт отдельно только для нескольких клиентов или разных политик среды выполнения.
 
 ## Экспорты extensions
 

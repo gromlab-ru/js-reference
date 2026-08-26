@@ -4,6 +4,11 @@ React SPA строится по Unit Architecture. Перед проектиро
 `unit-architecture`. Этот раздел не заменяет общую архитектурную модель и закрепляет только решения выбранного
 React-проекта.
 
+Если skill недоступен, используй документацию публичного репозитория
+[`gromlab-ru/unit-architecture`](https://github.com/gromlab-ru/unit-architecture). Сначала прочитай обзор и архитектурную
+модель, затем применяй проектные уточнения этого раздела. Не заменяй отсутствующий skill собственными предположениями об
+архитектуре.
+
 ## Порядок работы
 
 1. Прочитай [`архитектурный профиль`](project-profile.md): он определяет роли, фасеты, сегменты и группы проекта.
@@ -30,15 +35,16 @@ React-проекта.
 - фасеты `index.ts` и `lazy.ts`;
 - алиасы `app/*`, `compositions/*`, `domains/*`, `infra/*`, `ui/*` и `shared/*`;
 - общий и профильный словарь сегментов;
-- группы `layouts`, `pages`, `screens` и `widgets`;
-- граница конфигурации маршрутов в `app` и отображаемых страниц в `compositions/pages`.
+- группы `layouts`, `routes`, `screens` и `widgets`;
+- граница дерева URL в `app`, маршрутных адаптеров в `compositions/routes` и экранных сценариев в
+  `compositions/screens`.
 
 ## Связанные области
 
 | Задача | Документ |
 | --- | --- |
 | Создание и размещение React-компонента | [`UI и компоненты`](../ui/README.md) |
-| Маршруты и динамические страницы | [`Маршрутизация`](../routing/README.md) |
+| Маршруты, экраны и разделение сборки | [`Маршрутизация`](../routing/README.md) |
 | Получение и изменение данных | [`Data Fetching`](../data-fetching/README.md) |
 | Состояние React, Zustand и SWR | [`State Management`](../state-management/README.md) |
 | Настройка алиасов в TypeScript и Vite | [`Platform`](../platform/module-aliases.md) |

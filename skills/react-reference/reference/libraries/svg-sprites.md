@@ -69,10 +69,15 @@ metadata; generated-файлы не редактируются.
 
 ```tsx
 import { AppIcon } from 'infra/app-icons'
-
 import styles from './search-button.module.css'
 
-export function SearchButton() {
+/**
+ * Запускает поиск и показывает его пиктограмму.
+ *
+ * Используется для:
+ *  - отображения основного действия поиска
+ */
+export const SearchButton = () => {
   return (
     <button type="button">
       <AppIcon icon="search" className={styles.icon} aria-hidden="true" />
@@ -122,7 +127,7 @@ Viewer нужен человеку для визуальной проверки 
 npm install --save-dev @gromlab/svg-sprites
 ```
 
-Создай юнит страницы с динамическим фасетом `src/compositions/pages/svg-sprites/lazy.ts`:
+Создай служебный маршрутный юнит с динамическим фасетом `src/compositions/routes/svg-sprites/lazy.ts`:
 
 ```tsx
 import { SpriteViewer } from '@gromlab/svg-sprites/react'
@@ -131,7 +136,13 @@ const sources = [
   () => import('infra/app-icons/.svg-sprite/svg-sprite.manifest.js'),
 ] as const
 
-export function Component() {
+/**
+ * Показывает служебный просмотрщик SVG-спрайтов.
+ *
+ * Используется для:
+ *  - визуальной проверки и настройки иконок в разработке
+ */
+export const Component = () => {
   return <SpriteViewer sources={sources} title="Иконки проекта" />
 }
 ```
@@ -147,7 +158,7 @@ export const appRouter = createBrowserRouter([
     ? [
         {
           path: '/svg-sprites',
-          lazy: () => import('compositions/pages/svg-sprites/lazy'),
+          lazy: () => import('compositions/routes/svg-sprites/lazy'),
         },
       ]
     : []),
@@ -160,3 +171,6 @@ export const appRouter = createBrowserRouter([
 
 Skill `svg-sprites-ru` загружай только тогда, когда этот reference не даёт ответа, например для другого framework,
 bundler или mode, remote sprite, нестандартных transforms, программного API либо неизвестной ошибки генерации.
+Если skill недоступен, используй документацию публичного репозитория
+[`gromlab-ru/svg-sprites`](https://github.com/gromlab-ru/svg-sprites). Не подбирай режим и параметры генератора по
+предположению.

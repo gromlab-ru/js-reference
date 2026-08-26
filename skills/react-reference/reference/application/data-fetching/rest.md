@@ -42,6 +42,10 @@ const petDto = await getPet(petStoreHttpClient, { id })
 
 Второй вариант допустим для lazy-модуля, который не должен включать всё дерево API client в свой чанк. Operation и `HttpClient` импортируются из фасета одного API-модуля; transport не создаётся и не настраивается в consumer.
 
+Если демонстрационное приложение должно запускаться без внешнего сервера, сохрани тот же HTTP-контракт и перехватывай
+запросы отдельным инфраструктурным юнитом MSW. Не подменяй доменный адаптер или API-клиент тестовой реализацией. Порядок
+размещения, запуска и проверки описан в [`Автономной имитации API`](api-mocking.md).
+
 ## 2. Создай domain contract
 
 До вызова source operation определи domain input, result и известные errors. Не используй DTO как публичный тип домена, даже когда поля временно совпадают.
@@ -63,7 +67,9 @@ export type UpdatePetInput = Readonly<{
 
 ## 3. Создай и опубликуй adapter
 
-Adapter преобразует domain input в source request, вызывает готовую infra-возможность, преобразует response DTO в domain result и разрешает source errors.
+Адаптер преобразует предметные входные данные в запрос источника, вызывает готовую инфраструктурную возможность,
+преобразует DTO ответа в предметный результат и полностью классифицирует ошибки источника. Для GET-адаптера, который
+служит загрузчиком SWR, каждый неуспешный исход должен стать одной из ошибок его публичного предметного контракта.
 
 ```ts
 export const getPet = async (petId: string): Promise<Pet> => {
@@ -76,10 +82,19 @@ export const getPet = async (petId: string): Promise<Pet> => {
       throw createPetNotFoundError(petId)
     }
 
-    throw toApplicationDefect('pets.getPet', error)
+    throw createPetTemporarilyUnavailableError()
   }
 }
 ```
+
+Такой GET-адаптер не оставляет SWR неизвестное значение, которое нарушило бы тип `SWRResponse<Pet,
+GetPetError>`. Включи запасной код вроде `TEMPORARILY_UNAVAILABLE` в тип ошибки конкретной GET-операции и используй его
+для сетевого сбоя, неизвестного ответа или другого нераспознанного исключения. Не добавляй общий код `UNEXPECTED` и не
+передавай исходную ошибку через SWR.
+
+Это правило относится к GET-адаптерам, которые являются загрузчиками типизированного SWR-хука. Для изменяющих и
+императивных операций неизвестный сбой по-прежнему преобразуется в `ApplicationDefect` и обрабатывается по
+[`failure-handling`](../quality/failure-handling.md).
 
 Фасет домена публикует adapter без бессмысленного wrapper:
 
@@ -99,6 +114,15 @@ export const useGetPet = (petId: string | null): UseGetPetResponse => {
   return useSWR(key, ([, currentPetId]) => getPet(currentPetId))
 }
 ```
+
+Тип ответа хука является стандартным `SWRResponse<Pet, GetPetError>`. Не переименовывай и не удаляй его поля, не
+создавай отдельное поле `defect`. Потребитель проверяет ожидаемую ошибку в `error`, а для повторного запроса и обновления
+кеша использует стандартный `mutate`.
+
+Рабочие примеры этого контракта находятся в `demo-app`: публичная сессия
+[`useGetCurrentSession`](../../../demo-app/src/domains/authentication/hooks/use-get-current-session/use-get-current-session.hook.ts)
+и приватный профиль
+[`useGetCurrentUser`](../../../demo-app/src/domains/user/hooks/use-get-current-user/use-get-current-user.hook.ts).
 
 React consumer использует hook из фасета домена:
 
@@ -175,7 +199,9 @@ URL, credentials, headers, timeout, retry и общая нормализация
 - Consumer предметных данных импортирует hook или adapter из фасета домена.
 - Domain contract не содержит DTO и source errors.
 - Adapter использует готовый API client либо standalone operation с configured transport.
+- GET-адаптер для SWR преобразует каждый неуспешный исход в ошибку своего публичного контракта.
 - GET для render выполняется через public domain SWR hook.
+- SWR-хук возвращает стандартный `SWRResponse`; потребитель использует `error` и `mutate`.
 - Imperative GET и mutation выполняются через public domain adapter.
 - Mutation adapter не зависит от SWR.
 - Cache synchronization имеет явного lifecycle owner.
