@@ -1,27 +1,9 @@
 # Настройка PostCSS
 
-Этот документ описывает общую конфигурацию для React + Vite и Next.js 16+. В обоих окружениях config находится в
-корне package приложения рядом с его `package.json`.
+Размещай `postcss.config.mjs` в корне пакета приложения рядом с `package.json`. Если в проекте уже есть конфигурация,
+переменные или шкала медиавыражений, сохраняй их устройство и не создавай параллельную систему.
 
-## Перед настройкой
-
-Если PostCSS config, variables, tokens или breakpoint-шкала уже существуют, сохраняй их формат, имена, значения и
-расположение. Не создавай вторую систему рядом с рабочей и не выполняй массовую миграцию styles.
-
-Для нового окружения подготовь:
-
-```text
-postcss.config.mjs
-src/shared/styles/
-├── index.css
-├── variables.css
-└── media.css
-```
-
-Путь `src/shared/styles` является базовым. Адаптируй его к архитектуре проекта, но сохрани одно центральное место для
-global variables и media conditions.
-
-## PostCSS config
+## Конфигурация PostCSS
 
 Создай `postcss.config.mjs`:
 
@@ -38,77 +20,77 @@ export default {
 }
 ```
 
-Plugins выполняются в фиксированном порядке:
+Порядок плагинов важен:
 
-1. `@csstools/postcss-global-data` добавляет definitions из `media.css` в контекст каждого CSS-файла.
-2. `postcss-custom-media` раскрывает именованные media conditions.
-3. `postcss-nesting` преобразует nesting.
-4. `autoprefixer` обрабатывает итоговые declarations по Browserslist проекта.
+1. `@csstools/postcss-global-data` добавляет объявления из `media.css` в контекст каждого CSS-файла.
+2. `postcss-custom-media` преобразует именованные медиавыражения.
+3. `postcss-nesting` преобразует вложенные правила.
+4. `autoprefixer` добавляет префиксы после остальных преобразований.
 
-Global data всегда должен выполняться до custom media. Autoprefixer размещай после синтаксических преобразований.
-
-Сохраняй существующий формат config, если проект уже использует CommonJS, array plugins или framework-specific
-обёртку. Не подключай object и array формы одновременно.
+Не импортируй плагины вручную и не смешивай объектную и массивную формы конфигурации.
 
 ## Начальные файлы
 
+Каждое новое приложение начинает со следующей структуры:
+
+```text
+src/shared/styles/
+├── index.css
+├── media.css
+└── variables.css
+```
+
+Три файла сохраняют свои роли по мере роста приложения. Если появляются сброс стилей, типографика или темы,
+создавай для них отдельные файлы рядом и подключай их через `index.css`.
+
 ### `variables.css`
 
-Храни здесь только общие CSS custom properties, доступные всему приложению:
+Храни здесь общие CSS-переменные приложения:
 
 ```css
 :root {
-  --color-text: #212124;
-  --color-background: #ffffff;
+  --color-action-primary: #3157d5;
+  --color-action-secondary: #e8ecf8;
+  --color-action-danger: #c92a2a;
+  --color-focus-ring: #6f8cff;
+  --color-surface-page: #f7f8fc;
+  --color-text-on-action: #ffffff;
+  --color-text-primary: #172038;
+  --font-family-sans: Inter, system-ui, sans-serif;
+  --radius-control: 0.625rem;
   --space-4: 1rem;
-  --radius-2: 0.5rem;
 }
 ```
 
-Не добавляй полный набор условных tokens заранее. Каждый token должен иметь фактический смысл и consumer. Product
-theme и brand semantics размещай у их владельца, если они не являются общими primitives приложения.
+Это минимальный исходный набор, а не готовая система оформления продукта. Замени значения по дизайну приложения и
+добавляй переменную только при наличии общего смысла. Если приложение поддерживает несколько тем, вынеси их значения
+в отдельные файлы каталога `themes/`, но сохрани одно место определения каждого значения.
 
 ### `media.css`
 
-Храни здесь только `@custom-media` definitions:
+Храни здесь только объявления `@custom-media`:
 
 ```css
-/* Ширина — Mobile First (min-width), кроме --xs (max-width) */
-@custom-media --xs (max-width: 29.9375rem); /* 479px — до sm */
-@custom-media --sm (min-width: 30rem); /* 480px — телефон альбом / малый планшет */
-@custom-media --md (min-width: 48rem); /* 768px — планшет */
-@custom-media --lg (min-width: 64rem); /* 1024px — малый десктоп */
-@custom-media --xl (min-width: 75rem); /* 1200px — десктоп */
-@custom-media --2xl (min-width: 90rem); /* 1440px — широкий десктоп */
-@custom-media --3xl (min-width: 120rem); /* 1920px — full HD+ */
-
-/* Высота — min-height */
-@custom-media --h-xs (min-height: 41.6875rem); /* 667px — iPhone SE портрет */
-@custom-media --h-sm (min-height: 43.875rem); /* 702px */
-@custom-media --h-md (min-height: 50.625rem); /* 810px — iPad портрет */
-@custom-media --h-lg (min-height: 56.25rem); /* 900px */
-@custom-media --h-xl (min-height: 62.5rem); /* 1000px */
-@custom-media --h-2xl (min-height: 68.75rem); /* 1100px */
-@custom-media --h-3xl (min-height: 75rem); /* 1200px */
+@custom-media --xs (max-width: 29.9375rem);
+@custom-media --sm (min-width: 30rem);
+@custom-media --md (min-width: 48rem);
+@custom-media --lg (min-width: 64rem);
+@custom-media --xl (min-width: 75rem);
+@custom-media --2xl (min-width: 90rem);
+@custom-media --3xl (min-width: 120rem);
 ```
 
-Это базовая шкала для нового проекта без готовых breakpoints. Не создавай её автоматически, если layouts и дизайн
-требуют другие имена или значения. Существующую шкалу не заменяй.
+Это начальная шкала для проекта без готовых контрольных точек. Адаптируй значения к дизайну до начала вёрстки и не
+заменяй шкалу существующего проекта. Основной подход остаётся Mobile First: базовые правила описывают малый экран, а
+расширения используют условия с `min-width`. Условие `--xs` с `max-width` применяй только для необходимого ограничения
+сверху.
 
-Не импортируй `media.css` в runtime CSS. Его definitions передаются каждому файлу через
-`@csstools/postcss-global-data`.
-
-Media conditions нельзя хранить в CSS custom properties: `var()` не работает в условии `@media`.
-
-```css
-/* Не работает как media condition. */
-@media (min-width: var(--breakpoint-md)) {
-}
-```
+Не импортируй `media.css` в `index.css`. Плагин `@csstools/postcss-global-data` передаёт его объявления каждому
+обрабатываемому CSS-файлу.
 
 ### `index.css`
 
-Собери global runtime styles:
+Собери здесь общие стили времени выполнения:
 
 ```css
 @import './variables.css';
@@ -120,70 +102,43 @@ Media conditions нельзя хранить в CSS custom properties: `var()` �
 }
 
 html {
-  color: var(--color-text);
-  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  background: var(--color-surface-page);
+  font-family: var(--font-family-sans);
 }
 
 body {
+  min-block-size: 100vh;
   margin: 0;
 }
 ```
 
-Добавляй reset, global typography и theme imports только при реальной необходимости. Не подключай CSS Modules через
+Подключай здесь сброс стилей, общую типографику и темы, когда они появляются. Не подключай CSS Modules через
 `index.css`.
 
 ## Browserslist
 
-Задай browser targets одним способом:
+Задай поддерживаемые браузеры в одном месте: в поле `browserslist` файла `package.json` или в `.browserslistrc`.
+Значения должны соответствовать требованиям продукта. Не задавай отдельный список только для Autoprefixer.
 
-- в поле `browserslist` файла `package.json`; или
-- в `.browserslistrc`; или
-- в уже принятом проектом единственном источнике.
+## Подключение общих стилей
 
-Пример поля `package.json`:
-
-```json
-{
-  "browserslist": [
-    "defaults and supports es6-module"
-  ]
-}
-```
-
-Targets должны соответствовать политике поддержки продукта. Не копируй пример без проверки требований и не
-задавай отдельные targets только для Autoprefixer.
-
-## Глобальное подключение
-
-### React + Vite
-
-Импортируй global entry ровно один раз из browser entry приложения:
+Импортируй `index.css` ровно один раз во входном файле приложения:
 
 ```ts
 import './shared/styles/index.css'
 ```
 
-Адаптируй относительный путь к фактическому расположению entry и styles.
-
-### Next.js 16+
-
-При App Router импортируй global entry ровно один раз из корневого layout:
-
-```tsx
-import '../shared/styles/index.css'
-```
-
-При другой структуре каталогов адаптируй путь, но сохраняй один глобальный application boundary. Не импортируй
-global entry повторно из pages, layouts нижнего уровня или components.
+Адаптируй относительный путь к фактическому расположению входного файла. Не повторяй импорт в маршрутах и
+компонентах.
 
 ## Проверка конфигурации
 
-1. Запусти production build приложения.
-2. Убедись, что `variables.css` входит в итоговый CSS.
-3. Убедись, что `media.css` используется как global data и не подключается отдельным runtime import.
-4. Проверь преобразование `@media (--md)` и вложенного selector на минимальном CSS-примере.
-5. Проверь prefix на declaration, для которого он требуется выбранным browser targets.
-6. Убедись, что global CSS импортирован один раз, а CSS Modules продолжают собираться.
-7. Запусти formatter и stylelint, если они настроены в проекте.
+1. Запусти производственную сборку приложения.
+2. Убедись, что `variables.css` попал в итоговый CSS.
+3. Убедись, что `media.css` используется как общие данные и не импортируется в итоговый CSS отдельно.
+4. Проверь преобразование `@media (--md)` и вложенного селектора на небольшом CSS Module.
+5. Убедись, что общие стили подключены один раз, а CSS Modules продолжают собираться.
+6. Запусти форматирование и Stylelint, если они настроены в проекте.
 
-Наличие config без успешной production-сборки не подтверждает работоспособность pipeline.
+Наличие конфигурации без успешной производственной сборки не подтверждает её работоспособность.

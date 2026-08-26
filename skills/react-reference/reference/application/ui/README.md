@@ -6,9 +6,10 @@
 
 | Задача | Референс |
 | --- | --- |
-| Общий стиль application code | [`code-style.md`](../../../code-style.md) |
-| TypeScript contracts и runtime checks | [`languages/typescript/README.md`](../../../languages/typescript/README.md) |
-| JSX, props, hooks и декомпозиция | [`languages/jsx-tsx.md`](../../../languages/jsx-tsx.md) |
+| Общие правила кода | [`styleguide/README.md`](../../styleguide/README.md) |
+| Контракты TypeScript и проверки значений | [`styleguide/typescript/README.md`](../../styleguide/typescript/README.md) |
+| JSX, свойства, хуки и декомпозиция | [`styleguide/jsx-tsx.md`](../../styleguide/jsx-tsx.md) |
+| Общие стили и CSS Modules | [`styleguide/css.md`](../../styleguide/css.md) |
 | Самостоятельный UI-юнит или внутренний component | [`architecture/ui-units.md`](../architecture/ui-units.md) |
 | Реализация публичного UI-юнита | [`examples/ui/button/`](../examples/ui/button/) |
 

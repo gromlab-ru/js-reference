@@ -6,7 +6,7 @@ Session имеет общий контракт, клиентский framework A
 
 ## Решение
 
-Проект объявил фасеты `index`, `client` и `server`:
+Проект объявил `index.ts`, `client.ts` и `server.ts` маркерами фасетов и зарезервировал эти пути во всём frontend root:
 
 ```text
 domains/session/
@@ -38,7 +38,7 @@ export { getServerSession } from './server/get-server-session'
 - `client` содержит клиентскую framework-границу;
 - `server` достигает server-only runtime.
 
-Имена фасетов определены проектом. Другой проект может выбрать иную схему.
+Имена фасетов определены проектом. Другой проект может выбрать иную схему. Папки `client/` и `server/` не содержат маркеров и остаются внутренней реализацией Session.
 
 ## Потребители
 

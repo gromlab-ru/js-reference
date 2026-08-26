@@ -27,6 +27,5 @@ React SPA строится по Unit Architecture. Перед проектиро
 - [`examples/domains/authentication/`](../examples/domains/authentication/) — предметная auth-модель, operations, errors и SWR integration.
 - [`examples/infra/identity-api/`](../examples/infra/identity-api/) — ручной REST client и JWT transport policy.
 - [`examples/routing/app-router/`](../examples/routing/app-router/) — app-owned Data Router.
-- [`examples/postcss/`](../examples/postcss/) — build configuration и общие style primitives.
 
 Не копируй пример целиком без подтверждённой ответственности, consumers и публичного контракта.

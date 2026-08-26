@@ -38,8 +38,8 @@ export type { ButtonProps } from './types/button-props.type'
 - Межюнитные consumers импортируют UI только через фасет.
 - Не добавляй wrapper или alias, который только повторяет внутренний export.
 
-Правила TSX и props находятся в [`languages/jsx-tsx.md`](../../../languages/jsx-tsx.md), правила CSS Modules - в
-[`languages/postcss/usage.md`](../../../languages/postcss/usage.md). Реальная реализация находится в
+Правила TSX и свойств компонентов находятся в [`styleguide/jsx-tsx.md`](../../styleguide/jsx-tsx.md), правила CSS
+Modules — в [`styleguide/css.md`](../../styleguide/css.md). Реальная реализация находится в
 [`examples/ui/button/`](../examples/ui/button/).
 
 ## Проверка

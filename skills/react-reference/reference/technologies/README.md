@@ -26,7 +26,8 @@
 
 ## CSS Modules
 
-Этот reference пока не предоставляет инструкций по работе с этой технологией.
+Размещение и выбор CSS Modules описаны в [`application/styling`](../application/styling/README.md), правила написания
+CSS — в [`styleguide/css.md`](../styleguide/css.md).
 
 ## OAuth 2.0 / OpenID Connect
 
