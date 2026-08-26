@@ -76,7 +76,8 @@ Public domain SWR hook хранит клиентскую проекцию server
 
 Не копируй в Zustand response GET-operation, SWR request state, канонический entity list, последнее subscription value или connection state готового transport SDK. Zustand может хранить client-only интерпретацию рядом с server state: выбранный ID, режим отображения, несохранённый draft или локальный порядок.
 
-Предметные модели, hooks и state доступны внешним consumers только через публичный фасет домена по [`architecture/domains/README.md`](../architecture/domains/README.md).
+Предметные модели, hooks и state доступны внешним consumers только через публичный фасет домена по
+[`architecture/units/domains/README.md`](../architecture/units/domains/README.md).
 
 ## Context и Provider
 

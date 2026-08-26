@@ -1,7 +1,7 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom'
 
 /**
- * Показывает безопасный fallback для сбоев route-level сборки и render.
+ * Показывает безопасное сообщение при сбое загрузки или отображения маршрута.
  */
 export const RouteErrorBoundary = () => {
   const error = useRouteError()

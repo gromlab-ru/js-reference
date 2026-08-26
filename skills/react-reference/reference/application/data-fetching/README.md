@@ -41,10 +41,10 @@ REST API
 
 | Вопрос | Источник правил |
 | --- | --- |
-| Domain types, adapters и публичный фасет | [`architecture/domains/README.md`](../architecture/domains/README.md) |
-| Mapping source contract | [`architecture/domains/adapters.md`](../architecture/domains/adapters.md) |
-| Domain errors и defects | [`architecture/domains/errors.md`](../architecture/domains/errors.md) |
-| REST transport и API-модуль | [`architecture/infra-units.md`](../architecture/infra-units.md) |
+| Domain types, adapters и публичный фасет | [`architecture/units/domains/README.md`](../architecture/units/domains/README.md) |
+| Mapping source contract | [`architecture/units/domains/adapters.md`](../architecture/units/domains/adapters.md) |
+| Domain errors и defects | [`architecture/units/domains/errors.md`](../architecture/units/domains/errors.md) |
+| Граница технического API-модуля | [`architecture/units/infra.md`](../architecture/units/infra.md) |
 | Практический REST lifecycle | [`rest.md`](rest.md) |
 | Realtime lifecycle | [`realtime.md`](realtime.md) |
 | Создание REST client | [`@gromlab/rest-api-codegen`](../../libraries/rest-api-codegen/README.md) |

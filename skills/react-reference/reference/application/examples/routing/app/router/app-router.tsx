@@ -9,21 +9,21 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import('./routes/home.route')
+        lazy: () => import('@/compositions/pages/home/lazy')
       },
       {
         path: 'account',
-        lazy: () => import('./routes/account.route')
+        lazy: () => import('@/compositions/pages/account/lazy')
       },
       {
         path: 'sign-in',
-        lazy: () => import('./routes/sign-in.route')
+        lazy: () => import('@/compositions/pages/sign-in/lazy')
       }
     ]
   }
 ])
 
 /**
- * Подключает app-owned дерево маршрутов к browser history.
+ * Подключает принадлежащее app дерево маршрутов к истории браузера.
  */
 export const AppRouter = () => <RouterProvider router={router} />

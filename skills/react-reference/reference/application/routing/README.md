@@ -1,40 +1,97 @@
-# Routing в React SPA
+# Маршрутизация в React SPA
 
-Используй React Router Data Router через `createBrowserRouter` и `RouterProvider`. Routes и route-level сборка готовых возможностей принадлежат слою `app`.
+Используй React Router Data Router через `createBrowserRouter` и `RouterProvider`. Правила фасета `lazy.ts` и границу
+между `app` и `compositions/pages` определяет
+[`архитектурный профиль`](../architecture/project-profile.md#граница-app-и-compositions).
+Роль отображаемой страницы уточняет документ
+[`Композиционные юниты`](../architecture/units/compositions.md).
+
+## Владельцы
+
+Слой `app` владеет:
+
+- конфигурацией React Router и деревом URL;
+- вложенностью маршрутов и перенаправлениями;
+- глобальными обработчиками ошибок маршрутов;
+- подключением роутера к React;
+- динамическим импортом публичных фасетов страниц.
+
+Группа `compositions/pages` содержит отображаемые проекции маршрутов. Юнит этой группы собирает готовые публичные API,
+но не объявляет URL и не изменяет конфигурацию роутера.
 
 ## Почему Data Router
 
-Route objects дают единое дерево URL, layouts, lazy route modules и error boundaries. В этом stack router отвечает за навигацию и route lifecycle, но не становится вторым data-fetching механизмом.
+Объекты маршрутов дают единое дерево URL, `layouts`, динамическую загрузку и обработчики ошибок. Роутер отвечает за
+навигацию и жизненный цикл маршрута, но не становится вторым механизмом получения предметных данных.
 
 ## Граница данных
 
 - Не используй `loader` и `action` для предметных REST-данных.
-- GET server state для render получает domain SWR hook.
-- Mutation выполняется domain operation из event handler и синхронизирует SWR GET-cache.
-- Route component импортирует домен, composition и UI только через публичные фасеты.
-- Domain и infra не импортируют router и не выполняют navigation.
+- GET-состояние сервера для отображения получает доменный SWR-hook.
+- Изменение выполняется доменной операцией из обработчика события и синхронизирует GET-кеш SWR.
+- Страница импортирует домены, композиции и UI только через публичные фасеты.
+- `domains` и `infra` не импортируют React Router и не выполняют навигацию.
 
-Route guards используют уже опубликованный auth contract. Они не читают access token и не вызывают API client напрямую. Пока auth identity определяется, guard показывает явное pending state; после результата он отображает route или выполняет redirect на app boundary.
+Проверка доступа использует уже опубликованный контракт аутентификации. Она не читает access token и не вызывает
+API-клиент напрямую. Пока текущий пользователь определяется, граница показывает явное состояние ожидания; после
+результата она отображает маршрут или выполняет перенаправление на границе `app`.
 
 ## Структура
 
 ```text
-app/router/
-├── app-router.tsx
-├── route-error-boundary.tsx
-└── routes/
-    ├── home.route.tsx
-    └── account.route.tsx
+src/
+├── app/
+│   └── router/
+│       ├── app-router.tsx
+│       └── route-error-boundary.tsx
+└── compositions/
+    └── pages/
+        ├── home/
+        │   ├── lazy.ts
+        │   └── home-page.tsx
+        └── account/
+            ├── lazy.ts
+            └── account-page.tsx
 ```
 
-Файлы routes являются реализацией app-owned router, а не самостоятельными юнитами только из-за suffix или lazy loading. Для большой route responsibility подними отдельный screen/composition owner и оставь route module тонкой сборкой.
+Конфигурация импортирует только динамические фасеты страниц:
 
-Рабочий пример находится в [`examples/routing/app-router/`](../examples/routing/app-router/).
+```tsx
+const router = createBrowserRouter([
+  {
+    path: '/',
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        index: true,
+        lazy: () => import('@/compositions/pages/home/lazy'),
+      },
+      {
+        path: 'account',
+        lazy: () => import('@/compositions/pages/account/lazy'),
+      },
+    ],
+  },
+])
+```
+
+`lazy.ts` является фасетом юнита страницы и предоставляет ожидаемый React Router экспорт `Component`:
+
+```ts
+export { AccountPage as Component } from './account-page'
+```
+
+Не создавай в `app/router/routes` компоненты страниц. Тонкий файл-адаптер допустим только тогда, когда React Router
+требует форму, которую нельзя предоставить через `lazy.ts`; отображение и предметное поведение в нём не размещаются.
+
+Согласованный пример находится в [`examples/routing/`](../examples/routing/).
 
 ## Проверка
 
-- Router создан через `createBrowserRouter` и подключён через `RouterProvider`.
-- Route errors обрабатываются app-owned `errorElement`.
-- REST GET не выполняется через `loader`, а mutation — через `action`.
-- Domain и infra не зависят от React Router.
-- Lazy route module не обходит публичные фасеты юнитов.
+- Роутер создан через `createBrowserRouter` и подключён через `RouterProvider`.
+- Дерево URL и глобальные ошибки маршрутов принадлежат `app`.
+- Отображаемая страница принадлежит `compositions/pages`.
+- Динамический импорт проходит через `lazy.ts` юнита страницы.
+- REST GET не выполняется через `loader`, а изменение — через `action`.
+- `domains` и `infra` не зависят от React Router.
+- Динамическая загрузка не обходит публичные фасеты юнитов.

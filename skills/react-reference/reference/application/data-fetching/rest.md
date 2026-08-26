@@ -13,7 +13,9 @@ React consumer
 → REST API
 ```
 
-Границы domain contract, mapping и ошибок определены в [`architecture/domains`](../architecture/domains/README.md). Этот документ определяет, какой публичный API использовать для конкретного вида запроса.
+Границы domain contract, mapping и ошибок определены в
+[`architecture/units/domains`](../architecture/units/domains/README.md). Этот документ определяет, какой публичный API
+использовать для конкретного вида запроса.
 
 ## 1. Подготовь infra API-модуль
 
@@ -56,7 +58,8 @@ export type UpdatePetInput = Readonly<{
 }>
 ```
 
-Точные правила находятся в [`domains/contracts.md`](../architecture/domains/contracts.md) и [`domains/errors.md`](../architecture/domains/errors.md).
+Точные правила находятся в [`domains/contracts.md`](../architecture/units/domains/contracts.md) и
+[`domains/errors.md`](../architecture/units/domains/errors.md).
 
 ## 3. Создай и опубликуй adapter
 
@@ -157,6 +160,15 @@ await mutate(getPetKey(input.id))
 URL, credentials, headers, timeout, retry и общая нормализация transport errors принадлежат configured `HttpClient`. Domain adapter передаёт только параметры операции и не читает token самостоятельно.
 
 Стабильная identity может участвовать в private SWR key, но access token, refresh token и cookie в cache key не помещаются. Auth/session owner отключает и очищает private cache при logout или account switch.
+
+Если access token хранится в `localStorage`, технический владелец применяет следующие правила:
+
+- token рассматривается как непрозрачная строка;
+- token читается перед каждым защищённым запросом;
+- token не попадает в URL, ключ кеша, телеметрию и диагностические сообщения;
+- повреждённое или отклонённое API значение удаляется;
+- ответ `401` очищает token и не запускает автоматический повтор запроса;
+- защита от XSS обязательна, потому что выполняемый на странице JavaScript имеет доступ к `localStorage`.
 
 ## Проверка
 

@@ -1,6 +1,8 @@
 # Quality React SPA
 
-Quality объединяет правила обработки failures и проверки изменяемого кода. Общую классификацию ошибок применяй по [`failure-handling.md`](../../../failure-handling.md), предметные expected errors — по [`architecture/domains/errors.md`](../architecture/domains/errors.md).
+Quality объединяет правила обработки failures и проверки изменяемого кода. Общую классификацию ошибок применяй по
+[`failure-handling.md`](failure-handling.md), предметные expected errors — по
+[`architecture/units/domains/errors.md`](../architecture/units/domains/errors.md).
 
 ## Failure handling
 

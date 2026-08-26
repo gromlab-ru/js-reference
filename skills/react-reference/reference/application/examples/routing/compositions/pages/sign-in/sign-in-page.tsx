@@ -1,10 +1,10 @@
 /**
  * Отображает публичную точку входа в auth-сценарий приложения.
  */
-const SignInRoute = () => (
+const SignInPage = () => (
   <main>
     <h1>Вход</h1>
   </main>
 )
 
-export { SignInRoute as Component }
+export { SignInPage }

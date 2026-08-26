@@ -1,6 +1,8 @@
 # JSX и TSX
 
-Применяй к JSX/TSX-деревьям. Для `.jsx` также загрузи [JavaScript](javascript.md), для `.tsx` — [JavaScript](javascript.md) и [TypeScript](typescript/README.md). Владельца и границу компонента определяй по [`architecture/README.md`](../apps/react-vite/architecture/README.md) и [`architecture/ui-units.md`](../apps/react-vite/architecture/ui-units.md).
+Применяй к JSX-деревьям в файлах TSX вместе с правилами [TypeScript](typescript/README.md). Владельца и границу
+компонента определяй по [`application/architecture/README.md`](../application/architecture/README.md) и
+[`application/architecture/units/README.md`](../application/architecture/units/README.md).
 
 JSX должен описывать готовое дерево, а не содержать вычисления, сложное ветвление и проверки формы данных.
 
@@ -231,7 +233,9 @@ return (
 )
 ```
 
-`OrdersSection` размещается в отдельном component-файле у ближайшего unit owner. Не создавай новый юнит только ради декомпозиции; критерии самостоятельной UI-ответственности находятся в [`architecture/ui-units.md`](../apps/react-vite/architecture/ui-units.md).
+`OrdersSection` размещается в отдельном файле компонента у ближайшего владельца. Не создавай новый юнит только ради
+декомпозиции; критерии самостоятельной UI-ответственности находятся в
+[`application/architecture/units/compositions.md`](../application/architecture/units/compositions.md).
 
 Выноси JSX в отдельный компонент, если выполняется хотя бы одно условие:
 

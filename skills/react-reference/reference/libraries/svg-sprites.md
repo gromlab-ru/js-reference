@@ -122,7 +122,7 @@ Viewer нужен человеку для визуальной проверки 
 npm install --save-dev @gromlab/svg-sprites
 ```
 
-Создай lazy route module `src/app/router/routes/svg-sprites.route.tsx`:
+Создай юнит страницы с динамическим фасетом `src/compositions/pages/svg-sprites/lazy.ts`:
 
 ```tsx
 import { SpriteViewer } from '@gromlab/svg-sprites/react'
@@ -147,7 +147,7 @@ export const appRouter = createBrowserRouter([
     ? [
         {
           path: '/svg-sprites',
-          lazy: () => import('./routes/svg-sprites.route'),
+          lazy: () => import('@/compositions/pages/svg-sprites/lazy'),
         },
       ]
     : []),
