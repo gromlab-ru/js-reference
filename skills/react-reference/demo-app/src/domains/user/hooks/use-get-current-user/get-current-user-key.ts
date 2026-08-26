@@ -1,11 +1,4 @@
-/**
- * Ключ приватного профиля текущего пользователя.
- */
-export type GetCurrentUserKey = readonly [
-  'private',
-  string,
-  'backend-api/identity/users/get-current-user'
-]
+import type { GetCurrentUserKey } from './types/use-get-current-user.type'
 
 /**
  * Возвращает ключ профиля в области текущего пользователя.

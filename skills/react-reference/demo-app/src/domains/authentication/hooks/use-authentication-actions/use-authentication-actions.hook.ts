@@ -1,4 +1,5 @@
 import { useSWRConfig } from 'swr'
+import { selectSetAuthenticationStatus, useAppStore } from 'infra/app-store'
 import { signIn } from '../../adapters/sign-in.adapter'
 import { signOut } from '../../adapters/sign-out.adapter'
 import type { CurrentSession } from '../../types/current-session.type'
@@ -14,6 +15,7 @@ import type { UseAuthenticationActionsResponse } from './types/use-authenticatio
 export const useAuthenticationActions = (): UseAuthenticationActionsResponse => {
   const { mutate } = useSWRConfig()
   const currentSession = useGetCurrentSession()
+  const setAuthenticationStatus = useAppStore(selectSetAuthenticationStatus)
 
   /**
    * Удаляет приватные данные указанного пользователя.
@@ -41,6 +43,7 @@ export const useAuthenticationActions = (): UseAuthenticationActionsResponse => 
       const nextSession = await signIn(input)
 
       await mutate(getCurrentSessionKey(), nextSession, { revalidate: false })
+      setAuthenticationStatus('authenticated')
 
       return nextSession
     } catch (error) {
@@ -57,6 +60,7 @@ export const useAuthenticationActions = (): UseAuthenticationActionsResponse => 
    */
   const handleSignOut = async (): Promise<void> => {
     const previousUserId = currentSession.data?.userId
+    setAuthenticationStatus('unauthenticated')
 
     try {
       await mutate(getCurrentSessionKey(), null, { revalidate: false })

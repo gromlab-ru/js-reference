@@ -4,6 +4,7 @@ import { isEmail, isNotEmpty, useForm } from '@mantine/form'
 import cl from 'clsx'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { AUTHENTICATION_ERROR_CODE, isSignInError, useAuthenticationActions, useGetCurrentSession } from 'domains/authentication'
+import { selectAuthenticationStatus, useAppStore } from 'infra/app-store'
 import { getSignInReturnTo } from './helpers/get-sign-in-return-to'
 import styles from './styles/sign-in.module.css'
 import type { SignInFormValues } from './types/sign-in-form-values.type'
@@ -21,6 +22,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const authenticationActions = useAuthenticationActions()
   const currentSession = useGetCurrentSession()
+  const authenticationStatus = useAppStore(selectAuthenticationStatus)
   const location = useLocation()
   const navigate = useNavigate()
   const returnTo = getSignInReturnTo(location.state)
@@ -37,6 +39,13 @@ export const SignInScreen = (props: SignInScreenProps) => {
       password: isNotEmpty('Введите пароль')
     }
   })
+
+  /**
+   * Повторяет проверку текущей сессии.
+   */
+  const handleRetry = (): void => {
+    void currentSession.mutate()
+  }
 
   /**
    * Переводит фокус на первое поле с ошибкой.
@@ -78,11 +87,24 @@ export const SignInScreen = (props: SignInScreenProps) => {
     }
   }
 
-  if (currentSession.defect !== undefined) {
-    throw currentSession.defect
+  if (currentSession.error !== undefined) {
+    return (
+      <section {...rootAttrs} className={cl(styles.root, className)}>
+        <Container size="sm">
+          <Alert color="red" title="Не удалось проверить авторизацию">
+            <Stack gap="md">
+              <Text>Сервис временно недоступен. Повторите проверку.</Text>
+              <Button onClick={handleRetry} variant="light">
+                Повторить
+              </Button>
+            </Stack>
+          </Alert>
+        </Container>
+      </section>
+    )
   }
 
-  if (currentSession.isLoading) {
+  if (authenticationStatus === 'unknown') {
     return (
       <Center className={cl(styles.root, className)} component="section">
         <Loader color="indigo" />
@@ -90,7 +112,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
     )
   }
 
-  if (currentSession.data !== undefined && currentSession.data !== null) {
+  if (authenticationStatus === 'authenticated') {
     return <Navigate replace to={returnTo} />
   }
 

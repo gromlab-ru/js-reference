@@ -8,5 +8,7 @@ export type { GetCurrentSessionError } from './errors/get-current-session-error.
 export type { SignInError } from './errors/sign-in-error.type'
 export { useAuthenticationActions } from './hooks/use-authentication-actions/use-authentication-actions.hook'
 export { useGetCurrentSession } from './hooks/use-get-current-session/use-get-current-session.hook'
+export { AuthenticationProvider } from './providers/authentication-provider'
 export type { CurrentSession } from './types/current-session.type'
 export type { SignInInput } from './types/sign-in-input.type'
+export { AuthGuard } from './ui/auth-guard/auth-guard'

@@ -1,10 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { MainLayout } from 'compositions/layouts/main'
+import { HomeRoute } from 'compositions/routes/home'
+import { NotFoundRoute } from 'compositions/routes/not-found'
 import { RouteErrorBoundary } from './route-error-boundary/route-error-boundary'
 import { RoutePending } from './route-pending/route-pending'
 
 /**
- * Определяет дерево URL и динамически подключаемые страницы приложения.
+ * Определяет дерево URL и способ подключения маршрутов приложения.
  */
 export const appRouter = createBrowserRouter([
   {
@@ -15,14 +17,14 @@ export const appRouter = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import('compositions/routes/home/lazy')
+        Component: HomeRoute
       },
       {
         path: 'sign-in',
         lazy: () => import('compositions/routes/sign-in/lazy')
       },
       {
-        lazy: () => import('compositions/routes/authenticated/lazy'),
+        lazy: () => import('compositions/routes/require-authentication/lazy'),
         children: [
           {
             path: 'account',
@@ -32,7 +34,7 @@ export const appRouter = createBrowserRouter([
       },
       {
         path: '*',
-        lazy: () => import('compositions/routes/not-found/lazy')
+        Component: NotFoundRoute
       }
     ]
   }

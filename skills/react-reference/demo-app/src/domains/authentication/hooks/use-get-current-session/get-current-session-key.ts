@@ -1,7 +1,4 @@
-/**
- * Ключ единственного владельца текущей сессии.
- */
-export type GetCurrentSessionKey = readonly ['authentication/current-session']
+import type { GetCurrentSessionKey } from './types/use-get-current-session.type'
 
 /**
  * Возвращает стабильный ключ сессии без JWT.

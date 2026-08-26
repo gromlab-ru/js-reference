@@ -1,17 +1,20 @@
 import { RouterProvider } from 'react-router-dom'
+import { AuthenticationProvider } from 'domains/authentication'
 import { ThemeProvider } from 'infra/theme'
-import { appRouter } from '../router/app-router'
-import type { AppProps } from './types/app-props.type'
+import { appRouter } from './router/app-router'
 
 /**
  * Отображает корневую композицию приложения.
  *
  * Используется для:
+ *  - подключения жизненного цикла авторизации
  *  - подключения общей темы
  *  - подключения маршрутизатора
  */
-export const App = (_props: AppProps) => (
+export const App = () => (
   <ThemeProvider>
-    <RouterProvider router={appRouter} />
+    <AuthenticationProvider>
+      <RouterProvider router={appRouter} />
+    </AuthenticationProvider>
   </ThemeProvider>
 )

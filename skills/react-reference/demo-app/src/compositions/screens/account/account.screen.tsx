@@ -24,7 +24,7 @@ export const AccountScreen = (props: AccountScreenProps) => {
    * Повторно получает профиль пользователя.
    */
   const handleRetry = (): void => {
-    void currentUser.refresh()
+    void currentUser.mutate()
   }
 
   /**
@@ -41,10 +41,6 @@ export const AccountScreen = (props: AccountScreenProps) => {
     } finally {
       setIsSigningOut(false)
     }
-  }
-
-  if (currentUser.defect !== undefined) {
-    throw currentUser.defect
   }
 
   if (currentUser.error !== undefined) {
