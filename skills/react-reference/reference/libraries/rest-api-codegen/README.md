@@ -121,9 +121,9 @@ const pet = await petStoreApi.pets.getPet({ id: '42' })
 
 Другие варианты вызова показаны в разделе [`Использование API-клиента`](usage.md).
 
-Рабочий пример с JWT и обработкой защищённого `401` находится в
-[`demo-app/src/infra/backend-api/backend-api.ts`](../../../demo-app/src/infra/backend-api/backend-api.ts). Он сообщает
-общий статус через [`infra/app-store`](../../../demo-app/src/infra/app-store/), но не управляет SWR-кешем.
+JWT добавляется configured transport перед запросом. После настроенной refresh/retry policy потерю Bearer-сессии при
+terminal `401` обрабатывает вызывающий domain adapter через публичное действие auth-домена. Transport не изменяет
+состояние приложения и не управляет SWR-кешем.
 
 ## Карта документации
 
@@ -139,7 +139,7 @@ const pet = await petStoreApi.pets.getPet({ id: '42' })
 
 - [Пакет в npm](https://www.npmjs.com/package/@gromlab/rest-api-codegen)
 - [Репозиторий и официальная документация](https://github.com/gromlab-ru/rest-api-codegen)
-- [Agent skill `rest-api-codegen-ru`](../../../../../.agents/skills/rest-api-codegen-ru/SKILL.md)
+- [Agent skill `rest-api-codegen-ru`](../../../../rest-api-codegen-ru/SKILL.md)
 
 Используй доступный агенту skill `rest-api-codegen-ru`. Если его нет, установи командой:
 

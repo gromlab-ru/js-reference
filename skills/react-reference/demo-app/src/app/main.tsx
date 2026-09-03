@@ -1,6 +1,5 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import 'shared/styles/index.css'
 import { App } from './app'
 
 const rootElement = document.querySelector('#root')

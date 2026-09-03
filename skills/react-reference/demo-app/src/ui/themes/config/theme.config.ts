@@ -1,7 +1,7 @@
 import { createTheme } from '@mantine/core'
 
 /**
- * Определяет общую тему компонентов Mantine.
+ * Определяет общую визуальную тему компонентов Mantine.
  */
 export const theme = createTheme({
   defaultRadius: 'md',

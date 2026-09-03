@@ -1,19 +1,23 @@
 # Настройка Mantine
 
-По архитектурным правилам React SPA общая тема Mantine принадлежит юниту `infra/theme`. Компоненты приложения
+По архитектурным правилам React SPA общая тема Mantine принадлежит юниту `ui/themes`. Компоненты приложения
 используют Mantine напрямую, но не импортируют внутреннюю конфигурацию темы. Граница владельца описана в
-[`application/architecture/units/infra.md`](../../application/architecture/units/infra.md).
+[`application/architecture/units/ui.md`](../../application/architecture/units/ui.md).
 
 ## Структура
 
 Для нового приложения создай:
 
 ```text
-src/infra/theme/
+src/ui/themes/
 ├── index.ts
 ├── theme-provider.tsx
 ├── config/
 │   └── theme.config.ts
+├── styles/
+│   ├── index.css
+│   ├── media.css
+│   └── variables.css
 └── types/
     └── theme-provider-props.type.ts
 ```
@@ -21,14 +25,14 @@ src/infra/theme/
 Хук цветовой схемы добавляй только при наличии потребителя:
 
 ```text
-src/infra/theme/
+src/ui/themes/
 └── hooks/
     └── use-theme-color-scheme.hook.ts
 ```
 
 ## Подключение стилей
 
-В начале `src/shared/styles/index.css` объяви слой Mantine и импортируй слоистые стили библиотеки:
+В начале `src/ui/themes/styles/index.css` объяви слой Mantine и импортируй слоистые стили библиотеки:
 
 ```css
 @layer mantine;
@@ -37,8 +41,8 @@ src/infra/theme/
 @import './variables.css';
 ```
 
-Импорты должны находиться до обычных CSS-правил. `index.css` по-прежнему подключается один раз во входном файле
-приложения по правилам [`application/styling`](../../application/styling/README.md).
+Импорты должны находиться до обычных CSS-правил. `index.css` подключается один раз внутренней реализацией
+`ThemeProvider` по правилам [`application/styling`](../../application/styling/README.md).
 
 Дополнительный пакет Mantine подключает собственные стили только после установки. Например:
 
@@ -90,7 +94,7 @@ export const theme = createTheme({
 приложения. Указывай собственный шрифт только после подключения его файлов. Не добавляй настройки компонента заранее
 без фактического общего требования.
 
-Не публикуй `theme` через фасет. Она является внутренней конфигурацией `infra/theme`.
+Не публикуй `theme` через фасет. Она является внутренней конфигурацией `ui/themes`.
 
 ## ThemeProvider
 
@@ -116,6 +120,7 @@ export type ThemeProviderProps = {
 import { MantineProvider } from '@mantine/core'
 import { theme } from './config/theme.config'
 import type { ThemeProviderProps } from './types/theme-provider-props.type'
+import './styles/index.css'
 
 /**
  * Подключает тему Mantine ко всему приложению.
@@ -145,13 +150,16 @@ export { ThemeProvider } from './theme-provider'
 
 Тип `ThemeProviderProps` остаётся внутренним, пока он не нужен внешнему потребителю.
 
+Проверяемая реализация находится в
+[`demo-app/src/ui/themes/theme-provider.tsx`](../../../demo-app/src/ui/themes/theme-provider.tsx).
+
 ## Подключение к приложению
 
-Корневая композиция `app` импортирует провайдер через фасет `infra/theme`:
+Корневая композиция `app` импортирует провайдер через фасет `ui/themes`:
 
 ```tsx
 import { RouterProvider } from 'react-router-dom'
-import { ThemeProvider } from 'infra/theme'
+import { ThemeProvider } from 'ui/themes'
 import { appRouter } from './app-router'
 
 /**
@@ -210,13 +218,13 @@ export const useThemeColorScheme = (): ThemeColorSchemeControls => {
 }
 ```
 
-Опубликуй хук через `infra/theme/index.ts`. Потребитель не должен повторять правила определения фактической схемы.
+Опубликуй хук через `ui/themes/index.ts`. Потребитель не должен повторять правила определения фактической схемы.
 Если переключение не требуется, не создавай этот хук.
 
-`infra/theme` публикует только технический контракт схемы и не владеет кнопкой переключения. Размещай элемент управления
+`ui/themes` публикует только визуальный контракт схемы и не владеет кнопкой переключения. Размещай элемент управления
 у ближайшего визуального владельца. Для постоянной верхней панели создай вложенный композиционный юнит, как
 [`theme-color-scheme-toggle`](../../../demo-app/src/compositions/layouts/main/ui/header/ui/theme-color-scheme-toggle/), и
-импортируй `useThemeColorScheme` через фасет `infra/theme`. Поднимай переключатель в верхнеуровневый слой `ui` только
+импортируй `useThemeColorScheme` через фасет `ui/themes`. Поднимай переключатель в другой верхнеуровневый UI-юнит только
 после появления нескольких самостоятельных визуальных владельцев с одним устойчивым контрактом.
 
 ## Проверка
@@ -224,9 +232,9 @@ export const useThemeColorScheme = (): ThemeColorSchemeControls => {
 - Стили `@mantine/core` импортированы один раз до общих правил приложения.
 - `color-scheme` связан с Mantine, если приложение поддерживает обе схемы.
 - `ThemeProvider` подключён один раз в корневой композиции.
-- Конфигурация темы остаётся внутренней для `infra/theme`.
+- Конфигурация темы остаётся внутренней для `ui/themes`.
 - Базовая конфигурация не включает тёмную схему без продуктового требования.
 - Компоненты не импортируют `theme.config.ts`.
 - Хук цветовой схемы существует только при наличии потребителя.
-- Элемент переключения принадлежит визуальному владельцу, а не `infra/theme`.
+- Элемент переключения принадлежит ближайшему визуальному владельцу, а не `ui/themes`.
 - Производственная сборка включает стили Mantine и переменные темы.

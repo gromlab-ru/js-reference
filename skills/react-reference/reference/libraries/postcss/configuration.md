@@ -11,7 +11,7 @@
 export default {
   plugins: {
     '@csstools/postcss-global-data': {
-      files: ['src/shared/styles/media.css']
+      files: ['src/ui/themes/styles/media.css']
     },
     'postcss-custom-media': {},
     'postcss-nesting': {},
@@ -34,7 +34,7 @@ export default {
 Каждое новое приложение начинает со следующей структуры:
 
 ```text
-src/shared/styles/
+src/ui/themes/styles/
 ├── index.css
 ├── media.css
 └── variables.css
@@ -123,14 +123,13 @@ body {
 
 ## Подключение общих стилей
 
-Импортируй `index.css` ровно один раз во входном файле приложения:
+Импортируй `index.css` ровно один раз во внутренней реализации проектного `ThemeProvider`:
 
 ```ts
-import './shared/styles/index.css'
+import './styles/index.css'
 ```
 
-Адаптируй относительный путь к фактическому расположению входного файла. Не повторяй импорт в маршрутах и
-компонентах.
+Не повторяй импорт во входном файле, маршрутах и компонентах-потребителях.
 
 ## Проверка конфигурации
 

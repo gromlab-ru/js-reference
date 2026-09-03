@@ -191,7 +191,8 @@ URL, credentials, headers, timeout, retry и общая нормализация
 - token читается перед каждым защищённым запросом;
 - token не попадает в URL, ключ кеша, телеметрию и диагностические сообщения;
 - повреждённое или отклонённое API значение удаляется;
-- ответ `401` очищает token и не запускает автоматический повтор запроса;
+- при terminal Bearer `401`, оставшемся после настроенной refresh/retry policy, domain adapter сравнивает отклонённый
+  Bearer с текущим credential и вызывает публичное действие auth-домена только для текущей сессии;
 - защита от XSS обязательна, потому что выполняемый на странице JavaScript имеет доступ к `localStorage`.
 
 ## Проверка
@@ -206,3 +207,4 @@ URL, credentials, headers, timeout, retry и общая нормализация
 - Mutation adapter не зависит от SWR.
 - Cache synchronization имеет явного lifecycle owner.
 - Hook и adapter не создают transport и не дублируют auth/error policy.
+- Transport не интерпретирует terminal `401` как потерю сессии без контекста конкретной операции.

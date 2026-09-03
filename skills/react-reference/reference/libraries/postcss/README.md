@@ -13,7 +13,7 @@ CSS Modules предоставляет Vite. PostCSS обрабатывает и
 
 1. Проверь существующую обработку CSS и установи зависимости по [`setup.md`](setup.md).
 2. Создай `postcss.config.mjs` и три начальных файла по [`configuration.md`](configuration.md).
-3. Подключи `src/shared/styles/index.css` один раз во входном файле приложения.
+3. Подключи `src/ui/themes/styles/index.css` один раз внутри проектного `ThemeProvider`.
 4. Пиши CSS по [`styleguide/css.md`](../../styleguide/css.md).
 5. Проверь производственную сборку и итоговый CSS.
 

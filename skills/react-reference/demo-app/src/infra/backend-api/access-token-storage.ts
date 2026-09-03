@@ -10,7 +10,7 @@ export const getAccessToken = (): string | null => {
     return null
   }
 
-  if (accessToken.trim() === '') {
+  if (accessToken.length === 0 || accessToken.trim() !== accessToken) {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
     return null
   }
@@ -22,13 +22,11 @@ export const getAccessToken = (): string | null => {
  * Сохраняет непустой JWT текущей сессии.
  */
 export const setAccessToken = (accessToken: string): void => {
-  const normalizedAccessToken = accessToken.trim()
-
-  if (normalizedAccessToken === '') {
-    throw new TypeError('Access token must not be empty')
+  if (accessToken.length === 0 || accessToken.trim() !== accessToken) {
+    throw new TypeError('Access token must be non-empty without outer whitespace')
   }
 
-  localStorage.setItem(ACCESS_TOKEN_KEY, normalizedAccessToken)
+  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
 }
 
 /**

@@ -1,4 +1,4 @@
-import { selectAuthenticationStatus, useAppStore } from 'infra/app-store'
+import { useAuthenticationStatus } from '../../hooks/use-authentication-status/use-authentication-status.hook'
 import { useGetCurrentSession } from '../../hooks/use-get-current-session/use-get-current-session.hook'
 import type { AuthGuardProps } from './types/auth-guard-props.type'
 
@@ -17,7 +17,7 @@ export const AuthGuard = (props: AuthGuardProps) => {
     unauthenticatedFallback = null
   } = props
   const currentSession = useGetCurrentSession()
-  const authenticationStatus = useAppStore(selectAuthenticationStatus)
+  const authenticationStatus = useAuthenticationStatus()
 
   /**
    * Повторяет проверку текущей сессии.

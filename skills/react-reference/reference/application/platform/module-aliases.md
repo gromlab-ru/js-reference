@@ -60,7 +60,7 @@ export default defineConfig({
 
 ```ts
 import { getCurrentUser } from 'domains/authentication'
-import { ThemeProvider } from 'infra/theme'
+import { ThemeProvider } from 'ui/themes'
 ```
 
 Внутри одного юнита используй относительный путь:

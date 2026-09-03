@@ -1,30 +1,21 @@
-import { backendApi, clearAccessToken, getAccessToken } from 'infra/backend-api'
+import { backendApi, isBackendApiError } from 'infra/backend-api'
 import { toApplicationDefect } from 'shared/errors'
-import { isNotAuthenticatedSourceError } from '../source-errors/is-not-authenticated-source-error'
+import { logoutRejectedAuthentication } from '../operations/logout-rejected-authentication.operation'
 
 /**
- * Идемпотентно завершает локальную авторизованную сессию.
+ * Best-effort уведомляет backend о завершении уже закрытой локальной сессии.
  */
-export const signOut = async (): Promise<void> => {
+export const signOut = async (accessToken: string): Promise<void> => {
   try {
-    if (getAccessToken() === null) {
+    await backendApi.authentication.signOut({
+      headers: { Authorization: `Bearer ${accessToken}` }
+    })
+  } catch (error) {
+    if (isBackendApiError(error, 401)) {
+      logoutRejectedAuthentication(error)
       return
     }
 
-    try {
-      await backendApi.authentication.signOut()
-    } catch (error) {
-      if (!isNotAuthenticatedSourceError(error)) {
-        throw error
-      }
-    }
-  } catch (error) {
     throw toApplicationDefect('authentication.signOut', error)
-  } finally {
-    try {
-      clearAccessToken()
-    } catch (error) {
-      throw toApplicationDefect('authentication.clearAccessToken', error)
-    }
   }
 }

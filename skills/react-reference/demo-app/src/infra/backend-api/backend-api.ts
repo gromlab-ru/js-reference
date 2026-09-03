@@ -1,6 +1,5 @@
-import { appStore } from 'infra/app-store'
-import { ApiError, createApiClient, HttpClient, operationsTree } from './generated'
-import { clearAccessToken, getAccessToken } from './access-token-storage'
+import { createApiClient, HttpClient, operationsTree } from './generated'
+import { getAccessToken } from './access-token-storage'
 
 const httpClient = new HttpClient({
   baseUrl: '/api',
@@ -13,28 +12,19 @@ const httpClient = new HttpClient({
       return request
     }
 
-    const accessToken = getAccessToken()
+    const headers = new Headers(request.headers)
+    if (headers.has('Authorization')) {
+      return request
+    }
 
+    const accessToken = getAccessToken()
     if (accessToken === null) {
       return request
     }
 
-    const headers = new Headers(request.headers)
     headers.set('Authorization', `Bearer ${accessToken}`)
 
     return { ...request, headers }
-  },
-  onError(error) {
-    if (
-      error instanceof ApiError &&
-      error.status === 401 &&
-      error.request.secure === true
-    ) {
-      appStore.getState().setAuthenticationStatus('unauthenticated')
-      clearAccessToken()
-    }
-
-    throw error
   }
 })
 

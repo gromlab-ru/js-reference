@@ -1,6 +1,6 @@
 import { RouterProvider } from 'react-router-dom'
 import { AuthenticationProvider } from 'domains/authentication'
-import { ThemeProvider } from 'infra/theme'
+import { ThemeProvider } from 'ui/themes'
 import { appRouter } from './router/app-router'
 
 /**

@@ -42,8 +42,19 @@ Hooks получают request или response context и могут верну�
 const httpClient = new HttpClient({
   baseUrl: 'https://api.example.com',
   onRequest(request) {
+    if (request.secure !== true) {
+      return request
+    }
+
+    const accessToken = getAccessToken()
+    if (accessToken === null) {
+      return request
+    }
+
     const headers = new Headers(request.headers)
-    headers.set('Authorization', `Bearer ${getAccessToken()}`)
+    if (!headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${accessToken}`)
+    }
 
     return {
       ...request,
@@ -59,20 +70,23 @@ const httpClient = new HttpClient({
 
 ## Защищённый 401
 
-Обрабатывай потерю авторизации в `onError` только для `401` от операции с `secure: true`. В браузерной SPA
-HTTP-транспорт должен:
+Не изменяй состояние авторизации глобально в `onError`: transport не знает, какая схема аутентификации использована и
+что означает `401` для конкретной операции. Он повторно выбрасывает source error, сохраняя контракт операции.
 
-1. синхронно сообщить статус `unauthenticated` через действие ограниченного `infra/app-store`;
-2. удалить сохранённый access token;
-3. повторно выбросить исходную ошибку, чтобы операция сохранила свой контракт ошибки.
+Потерю Bearer-сессии обрабатывает вызывающий domain adapter. Если защищённая операция после настроенной transport-level
+refresh/retry policy вернула terminal `401`, adapter вызывает публичное действие auth-домена, которое синхронно удаляет
+credential и закрывает auth boundary. Операции входа, регистрации, refresh и альтернативные схемы аутентификации
+сохраняют собственную обработку `401`.
 
-Статус нужен, чтобы `AuthGuard` немедленно закрыл защищённую разметку. HTTP-транспорт не импортирует SWR, не вызывает
-`mutate` и не знает ключи сессии или приватных данных. Очистку доменной сессии и приватного SWR-кеша выполняет владелец
-жизненного цикла авторизации, подписанный на статус приложения.
+Если `onError` выполняет refresh, при окончательном отказе повторно выброси исходный `ApiError(401)` либо другой стабильный
+terminal-auth error с информацией об отклонённом credential. Не заменяй его обычным `Error`: domain adapter должен
+отличить потерю сессии от временного сбоя и не завершить новую сессию из-за позднего ответа старого запроса.
 
-Точная реализация одного полного клиента находится в
-[`demo-app/src/infra/backend-api/backend-api.ts`](../../../demo-app/src/infra/backend-api/backend-api.ts). В этом файле
-рядом находятся настроенный `HttpClient`, обработка защищённого `401` и `createApiClient`.
+HTTP-транспорт не импортирует auth store, SWR, router и доменные session keys. Очистку сессии и приватного SWR-кеша
+выполняет владелец жизненного цикла авторизации.
+
+Transport без auth side effects показан в
+[`demo-app/src/infra/backend-api/backend-api.ts`](../../../demo-app/src/infra/backend-api/backend-api.ts).
 
 В workspace или npm SDK экспортируй `HttpClient`, но не создавай configured singleton с URL и credentials. Каждый
 consumer настраивает transport для своего runtime. Организация SDK описана в [`sdk.md`](sdk.md).

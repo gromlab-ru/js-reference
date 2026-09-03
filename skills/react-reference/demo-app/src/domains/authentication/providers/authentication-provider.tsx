@@ -1,17 +1,14 @@
 import { useEffect } from 'react'
 import { useSWRConfig } from 'swr'
-import {
-  selectAuthenticationStatus,
-  selectSetAuthenticationStatus,
-  useAppStore
-} from 'infra/app-store'
 import { getCurrentSessionKey } from '../hooks/use-get-current-session/get-current-session-key'
 import { useGetCurrentSession } from '../hooks/use-get-current-session/use-get-current-session.hook'
 import { isPrivateCacheKey } from '../hooks/use-authentication-actions/is-private-cache-key'
+import { useAuthenticationStatus } from '../hooks/use-authentication-status/use-authentication-status.hook'
+import { authenticationStore } from '../stores/authentication.store'
 import type { AuthenticationProviderProps } from './types/authentication-provider-props.type'
 
 /**
- * Подключает жизненный цикл авторизации к общему состоянию и SWR-кешу.
+ * Подключает жизненный цикл авторизации к доменному состоянию и SWR-кешу.
  *
  * Используется для:
  *  - определения статуса авторизации при запуске
@@ -21,8 +18,8 @@ export const AuthenticationProvider = (props: AuthenticationProviderProps) => {
   const { children } = props
   const { mutate } = useSWRConfig()
   const currentSession = useGetCurrentSession()
-  const authenticationStatus = useAppStore(selectAuthenticationStatus)
-  const setAuthenticationStatus = useAppStore(selectSetAuthenticationStatus)
+  const authenticationStatus = useAuthenticationStatus()
+  const setAuthenticationStatus = authenticationStore.getState().setStatus
 
   useEffect(() => {
     if (currentSession.data === undefined) {

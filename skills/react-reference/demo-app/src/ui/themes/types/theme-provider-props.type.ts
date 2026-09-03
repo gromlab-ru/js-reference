@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 /**
- * Свойства провайдера темы приложения.
+ * Свойства провайдера визуальной темы приложения.
  */
 export type ThemeProviderProps = {
   /**

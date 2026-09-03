@@ -48,22 +48,23 @@ React consumer
 
 ## Потеря авторизации
 
-Для `401` от защищённой операции HTTP-транспорт удаляет access token и синхронно сообщает статус `unauthenticated` через
-ограниченный [`infra/app-store`](../../demo-app/src/infra/app-store/). `AuthGuard` подписывается на статус и сразу закрывает
-защищённый UI. Владелец домена авторизации затем очищает запись текущей сессии и приватные SWR-ключи.
+HTTP-транспорт не меняет auth state при `401`: одна source-ошибка может означать потерю Bearer-сессии, неверные данные
+входа или отказ другой схемы аутентификации. Потерю сессии интерпретирует domain adapter конкретной защищённой операции.
 
-Не связывай HTTP-транспорт со SWR. Он различает защищённый HTTP-запрос и сообщает технический статус, но не знает
-предметный состав сессии и приватного кеша. Эталонное разделение ответственности показано в
-[`backend-api.ts`](../../demo-app/src/infra/backend-api/backend-api.ts),
-[`auth-guard.tsx`](../../demo-app/src/domains/authentication/ui/auth-guard/auth-guard.tsx) и
-[`authentication-provider.tsx`](../../demo-app/src/domains/authentication/providers/authentication-provider.tsx).
+При terminal Bearer `401`, оставшемся после настроенной refresh/retry policy, adapter вызывает публичное действие
+auth-домена. Оно синхронно удаляет credential и переводит доменный статус в `unauthenticated`, поэтому `AuthGuard` сразу
+закрывает защищённый UI. Владелец auth lifecycle очищает текущую сессию и приватные SWR-ключи. Transport не импортирует
+auth store, SWR или доменные ключи кеша.
+
+Перед logout auth-домен сравнивает credential завершившегося запроса с текущим. Поздний terminal `401` предыдущей сессии
+не должен удалить credential новой сессии. Refresh transport сохраняет для domain adapter стабильный terminal-auth error,
+а временный сбой refresh не считается доказательством потери сессии.
 
 ## Границы
 
 - React consumer предметных данных не импортирует infra API client или REST operation.
 - Domain adapter не публикует DTO и source errors.
 - Infra API-модуль не импортирует domain types и не управляет SWR cache.
-- Защищённый `401` переводится в общий статус приложения, но очисткой сессии и приватного кеша владеет домен
-  авторизации.
+- Terminal Bearer `401` интерпретируется domain adapter и передаётся публичному logout auth-домена.
 - SWR не создаёт transport и не используется для mutations.
 - Mutation и последующая cache synchronization остаются разными ответственностями.

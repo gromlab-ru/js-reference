@@ -1,7 +1,7 @@
 import { ActionIcon, Tooltip } from '@mantine/core'
 import { IconMoon, IconSun } from '@tabler/icons-react'
 import cl from 'clsx'
-import { useThemeColorScheme } from 'infra/theme'
+import { useThemeColorScheme } from 'ui/themes'
 import styles from './styles/theme-color-scheme-toggle.module.css'
 import type { ThemeColorSchemeToggleProps } from './types/theme-color-scheme-toggle-props.type'
 

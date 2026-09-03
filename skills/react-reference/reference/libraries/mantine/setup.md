@@ -46,7 +46,7 @@ pnpm add @mantine/form
 ## После установки
 
 1. Подключи слоистые стили `@mantine/core` в общей точке входа CSS.
-2. Создай тему и проектный `ThemeProvider` в `infra/theme`.
+2. Создай тему и проектный `ThemeProvider` в `ui/themes`.
 3. Подключи `ThemeProvider` один раз в корневой композиции приложения.
 
 Точная конфигурация находится в [`configuration.md`](configuration.md).

@@ -3,8 +3,13 @@ import { Alert, Button, Center, Container, Loader, Paper, PasswordInput, Stack, 
 import { isEmail, isNotEmpty, useForm } from '@mantine/form'
 import cl from 'clsx'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { AUTHENTICATION_ERROR_CODE, isSignInError, useAuthenticationActions, useGetCurrentSession } from 'domains/authentication'
-import { selectAuthenticationStatus, useAppStore } from 'infra/app-store'
+import {
+  AUTHENTICATION_ERROR_CODE,
+  isSignInError,
+  useAuthenticationActions,
+  useAuthenticationStatus,
+  useGetCurrentSession
+} from 'domains/authentication'
 import { getSignInReturnTo } from './helpers/get-sign-in-return-to'
 import styles from './styles/sign-in.module.css'
 import type { SignInFormValues } from './types/sign-in-form-values.type'
@@ -22,7 +27,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const authenticationActions = useAuthenticationActions()
   const currentSession = useGetCurrentSession()
-  const authenticationStatus = useAppStore(selectAuthenticationStatus)
+  const authenticationStatus = useAuthenticationStatus()
   const location = useLocation()
   const navigate = useNavigate()
   const returnTo = getSignInReturnTo(location.state)
