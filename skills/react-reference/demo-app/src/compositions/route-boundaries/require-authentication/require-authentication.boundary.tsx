@@ -11,7 +11,7 @@ import styles from './styles/require-authentication.module.css'
  *  - отображения маршрутных состояний проверки сессии
  *  - подключения защищённой ветки через Outlet
  */
-export const RequireAuthenticationRoute = () => {
+export const RequireAuthenticationBoundary = () => {
   const location = useLocation()
   const returnTo = `${location.pathname}${location.search}${location.hash}`
 

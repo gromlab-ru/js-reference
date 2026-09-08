@@ -125,7 +125,7 @@ Public domain SWR hook хранит клиентскую проекцию server
 Context используй для стабильной dependency или scoped contract в React tree, а не как универсальный mutable store. Provider оправдан, когда создаёт scope, экземпляр store, dependency или lifecycle resource. Не создавай Provider только ради сокрытия обычного import через публичный фасет.
 
 Новые `.tsx` для `Provider` и компонентов проверки доступа, включая `AuthGuard`, создавай через `npx @gromlab/create`
-по [`правилам создания TSX`](../ui/tsx-generation.md). Отсутствие собственного DOM не отменяет генерацию.
+по [`правилам создания TSX`](../components/tsx-generation.md). Отсутствие собственного DOM не отменяет генерацию.
 
 ## Existing state manager
 

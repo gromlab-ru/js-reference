@@ -7,7 +7,7 @@
 ## Структура
 
 Для нового приложения сначала создай внутренний `ThemeProvider` по
-[`инструкции генерации TSX`](../../application/ui/tsx-generation.md), используя `ui-component` и каталог вывода
+[`инструкции генерации TSX`](../../application/components/tsx-generation.md), используя `ui-component` и каталог вывода
 `src/ui/themes/providers`. Затем добавь конфигурацию, общие стили и фасет владельца `ui/themes`:
 
 ```text

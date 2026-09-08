@@ -66,7 +66,7 @@ metadata; generated-файлы не редактируются.
 ## Использование
 
 Если компонент-потребитель новый, сначала создай его по
-[`инструкции генерации TSX`](../application/ui/tsx-generation.md). Затем импортируй компонент спрайта через фасет
+[`инструкции генерации TSX`](../application/components/tsx-generation.md). Затем импортируй компонент спрайта через фасет
 его владельца. Сам `AppIcon` остаётся результатом `@gromlab/svg-sprites`, а не заготовкой `@gromlab/create`:
 
 ```tsx
@@ -138,13 +138,18 @@ export { default } from './.svg-sprite/svg-sprite.manifest.js'
 
 Экспорт `default` сохраняет форму модуля manifest, которую принимает загрузчик `SpriteViewer`.
 
-Создай служебный маршрут через `ui-unit` по
-[`инструкции генерации TSX`](../application/ui/tsx-generation.md). Используй имя `svg-sprites` и каталог вывода
-`src/compositions/routes`. Удали ненужные тип свойств и CSS Module. Реализацию оставь в
-`src/compositions/routes/svg-sprites/svg-sprites.tsx`:
+Создай служебный экран через `ui-unit` по
+[`инструкции генерации TSX`](../application/components/tsx-generation.md). Используй имя `svg-sprites` и каталог вывода
+`src/compositions/screens`. Адаптируй созданные свойства и CSS Module для корня страницы по
+[`правилам страниц`](../application/pages/README.md#адаптация). Реализацию переименуй в `svg-sprites.screen.tsx`, а тип
+в `types/svg-sprites-screen-props.type.ts`; для корневого `div` сохрани соответствующие атрибуты из заготовки.
+Удали собственный параметр `children`: содержимым этой страницы управляет сам экран.
 
 ```tsx
 import { SpriteViewer } from '@gromlab/svg-sprites/react'
+import cl from 'clsx'
+import styles from './styles/svg-sprites.module.css'
+import type { SvgSpritesScreenProps } from './types/svg-sprites-screen-props.type'
 
 const sources = [
   () => import('infra/app-icons/lazy')
@@ -156,16 +161,22 @@ const sources = [
  * Используется для:
  *  - визуальной проверки и настройки иконок в разработке
  */
-export const SvgSprites = () => {
-  return <SpriteViewer sources={sources} title="Иконки проекта" />
+export const SvgSpritesScreen = (props: SvgSpritesScreenProps) => {
+  const { className, ...rootAttrs } = props
+
+  return (
+    <div {...rootAttrs} className={cl(styles.root, className)}>
+      <SpriteViewer sources={sources} title="Иконки проекта" />
+    </div>
+  )
 }
 ```
 
-Замени начальный `index.ts` на `src/compositions/routes/svg-sprites/lazy.ts`. Этот фасет только публикует компонент,
+Замени начальный `index.ts` на `src/compositions/screens/svg-sprites/lazy.ts`. Этот фасет только публикует компонент,
 а не содержит JSX или реализацию:
 
 ```ts
-export { SvgSprites as Component } from './svg-sprites'
+export { SvgSpritesScreen as Component } from './svg-sprites.screen'
 ```
 
 Подключи маршрут к React Router только в режиме разработки:
@@ -174,21 +185,22 @@ export { SvgSprites as Component } from './svg-sprites'
 import { createBrowserRouter } from 'react-router-dom'
 
 export const appRouter = createBrowserRouter([
-  // Application routes.
+  // Остальные маршруты приложения.
   ...(import.meta.env.DEV
     ? [
         {
           path: '/svg-sprites',
-          lazy: () => import('compositions/routes/svg-sprites/lazy'),
+          lazy: () => import('compositions/screens/svg-sprites/lazy'),
         },
       ]
     : []),
 ])
 ```
 
-После `npm run dev` Viewer доступен по `/svg-sprites`. Не импортируй route module статически: Viewer не должен
-входить в production route tree. После изменений запускай generation и typecheck; сложные и многоцветные SVG
-проверяй визуально в Viewer.
+После `npm run dev` просмотрщик доступен по `/svg-sprites`. Не импортируй экран статически: просмотрщик не должен
+входить в дерево маршрутов производственной сборки. Отдельная маршрутная граница не нужна, потому что решение о
+подключении известно из режима сборки. После изменений выполни генерацию и проверку типов; сложные и многоцветные SVG
+проверяй визуально в просмотрщике.
 
 Skill `svg-sprites-ru` загружай только тогда, когда этот reference не даёт ответа, например для другого framework,
 bundler или mode, remote sprite, нестандартных transforms, программного API либо неизвестной ошибки генерации.

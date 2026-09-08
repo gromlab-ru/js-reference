@@ -68,7 +68,7 @@ Unit owner определяет область жизни realtime integration:
 Owner component может не рендерить DOM. Его назначение и область жизни должны быть понятны из имени и места подключения. Наличие hook или Provider само по себе не создаёт новый юнит.
 
 Если для управления подпиской нужен новый `.tsx` с компонентом или `Provider`, создай его через `npx @gromlab/create`
-по [`правилам создания TSX`](../ui/tsx-generation.md), даже если он не выводит DOM.
+по [`правилам создания TSX`](../components/tsx-generation.md), даже если он не выводит DOM.
 
 При смене identity lifecycle owner отключает private subscription keys, обновляет transport context и затем активирует keys новой identity. Shared connection, commands, auth и reconnect остаются в infra transport.
 

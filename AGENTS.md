@@ -91,6 +91,10 @@ skills/react-reference/
 ├── demo-app/
 └── reference/
     ├── application/
+    │   ├── structure/
+    │   ├── pages/
+    │   ├── components/
+    │   ├── markup/
     │   ├── architecture/
     │   ├── data-fetching/
     │   ├── state-management/

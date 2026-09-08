@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { MainLayout } from 'compositions/layouts/main'
-import { HomeRoute } from 'compositions/routes/home'
-import { NotFoundRoute } from 'compositions/routes/not-found'
+import { HomeScreen } from 'compositions/screens/home'
+import { NotFoundScreen } from 'compositions/screens/not-found'
 import { RouteErrorBoundary } from './route-error-boundary/route-error-boundary'
 import { RoutePending } from './route-pending/route-pending'
 
@@ -17,24 +17,24 @@ export const appRouter = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: HomeRoute
+        Component: HomeScreen
       },
       {
         path: 'sign-in',
-        lazy: () => import('compositions/routes/sign-in/lazy')
+        lazy: () => import('compositions/screens/sign-in/lazy')
       },
       {
-        lazy: () => import('compositions/routes/require-authentication/lazy'),
+        lazy: () => import('compositions/route-boundaries/require-authentication/lazy'),
         children: [
           {
             path: 'account',
-            lazy: () => import('compositions/routes/account/lazy')
+            lazy: () => import('compositions/screens/account/lazy')
           }
         ]
       },
       {
         path: '*',
-        Component: NotFoundRoute
+        Component: NotFoundScreen
       }
     ]
   }

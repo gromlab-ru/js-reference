@@ -35,15 +35,18 @@ React-проекта.
 - фасеты `index.ts` и `lazy.ts`;
 - алиасы `app/*`, `compositions/*`, `domains/*`, `infra/*`, `ui/*` и `shared/*`;
 - общий и профильный словарь сегментов;
-- группы `layouts`, `routes`, `screens` и `widgets`;
-- граница дерева URL в `app`, маршрутных адаптеров в `compositions/routes` и экранных сценариев в
-  `compositions/screens`.
+- группы `layouts`, `route-boundaries`, `screens` и `widgets`;
+- прямое подключение экранов и каркасов в `app/router` и отдельное поведение маршрутных веток в
+  `compositions/route-boundaries`.
 
 ## Связанные области
 
 | Задача | Документ |
 | --- | --- |
-| Создание и размещение React-компонента | [`UI и компоненты`](../ui/README.md) |
+| Полная структура и сборка каркаса | [`Структура приложения`](../structure/README.md) |
+| Создание страницы от сценария до URL | [`Создание страниц`](../pages/README.md) |
+| Создание и размещение React-компонента | [`Создание компонентов`](../components/README.md) |
+| Разбор макета и декомпозиция интерфейса | [`Вёрстка по макету`](../markup/README.md) |
 | Маршруты, экраны и разделение сборки | [`Маршрутизация`](../routing/README.md) |
 | Получение и изменение данных | [`Data Fetching`](../data-fetching/README.md) |
 | Состояние React, Zustand и SWR | [`State Management`](../state-management/README.md) |
@@ -58,8 +61,8 @@ React-проекта.
 - [`domains/user/`](../../../demo-app/src/domains/user/) — профиль текущего пользователя;
 - [`infra/backend-api/`](../../../demo-app/src/infra/backend-api/) — общий клиент серверного API;
 - [`shared/errors/`](../../../demo-app/src/shared/errors/) — общий контракт неизвестного сбоя;
-- [`app/router/`](../../../demo-app/src/app/router/) и
-  [`compositions/routes/`](../../../demo-app/src/compositions/routes/) — дерево URL и маршрутные адаптеры;
+- [`app/router/`](../../../demo-app/src/app/router/) определяет дерево URL;
+- [`compositions/route-boundaries/`](../../../demo-app/src/compositions/route-boundaries/) задаёт отдельное поведение веток;
 - [`compositions/screens/`](../../../demo-app/src/compositions/screens/) — завершённые экранные сценарии.
 
 Не копируй `demo-app` целиком без подтверждённой ответственности, потребителей и публичного контракта.

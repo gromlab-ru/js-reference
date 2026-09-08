@@ -5,7 +5,7 @@
 [`application/architecture/units/README.md`](../application/architecture/units/README.md).
 
 Каждый новый `.tsx` в приложении создавай через `npx @gromlab/create` по
-[`правилам создания TSX`](../application/ui/tsx-generation.md), кроме указанных там исключений. Выбранный режим стиля
+[`правилам создания TSX`](../application/components/tsx-generation.md), кроме указанных там исключений. Выбранный режим стиля
 не отменяет обязательный способ создания. Существующий `.tsx` редактируй без перегенерации.
 
 JSX должен описывать готовое дерево, а не содержать вычисления, сложное ветвление и проверки формы данных.
@@ -249,7 +249,7 @@ return (
 ```
 
 Новый `OrdersSection` создай через генератор в собственной папке у ближайшего владельца по
-[`правилам создания TSX`](../application/ui/tsx-generation.md). Для внутреннего компонента не добавляй фасет.
+[`правилам создания TSX`](../application/components/tsx-generation.md). Для внутреннего компонента не добавляй фасет.
 Не создавай новый юнит только ради декомпозиции; критерии самостоятельной UI-ответственности находятся в
 [`application/architecture/units/compositions.md`](../application/architecture/units/compositions.md).
 
