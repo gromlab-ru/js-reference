@@ -40,29 +40,75 @@ API-клиент напрямую. Пока текущий пользовате�
 
 ## Структура
 
+Новые `.tsx` маршрутов, экранов и компонентов проверки доступа создавай через `npx @gromlab/create` по
+[`правилам создания TSX`](../ui/tsx-generation.md). `RoutePending` и `RouteErrorBoundary` тоже генерируются, в том числе
+в `app/router`. Конфигурация роутера с JSX попадает в исключение только при связывании готовых публичных API без
+собственной реализации интерфейса, предметного или технического поведения. Весь `app` из правила не исключается.
+
+Маршрутные юниты и экраны создавай через `ui-unit`, а внутренние `RoutePending` и `RouteErrorBoundary` через
+`ui-component`. На схеме показан полный каркас с файлами стилей и типов. Имена уже приведены к ролям `.route.tsx` и
+`.screen.tsx`, а фасет динамического маршрута заменён на `lazy.ts` по
+[`правилам адаптации`](../ui/tsx-generation.md#адаптация-каркаса).
+
 ```text
 src/
 ├── app/
 │   └── router/
 │       ├── app-router.tsx
 │       ├── route-error-boundary/
+│       │   ├── route-error-boundary.tsx
+│       │   ├── styles/
+│       │   │   └── route-error-boundary.module.css
+│       │   └── types/
+│       │       └── route-error-boundary-props.type.ts
 │       └── route-pending/
+│           ├── route-pending.tsx
+│           ├── styles/
+│           │   └── route-pending.module.css
+│           └── types/
+│               └── route-pending-props.type.ts
 └── compositions/
     ├── routes/
     │   ├── home/
     │   │   ├── index.ts
-    │   │   └── home.route.tsx
+    │   │   ├── home.route.tsx
+    │   │   ├── styles/
+    │   │   │   └── home.module.css
+    │   │   └── types/
+    │   │       └── home-route-props.type.ts
     │   └── account/
     │       ├── lazy.ts
-    │       └── account.route.tsx
+    │       ├── account.route.tsx
+    │       ├── styles/
+    │       │   └── account.module.css
+    │       └── types/
+    │           └── account-route-props.type.ts
     └── screens/
         ├── home/
         │   ├── index.ts
-        │   └── home.screen.tsx
+        │   ├── home.screen.tsx
+        │   ├── styles/
+        │   │   └── home.module.css
+        │   └── types/
+        │       └── home-screen-props.type.ts
         └── account/
             ├── index.ts
-            └── account.screen.tsx
+            ├── account.screen.tsx
+            ├── styles/
+            │   └── account.module.css
+            └── types/
+                └── account-screen-props.type.ts
 ```
+
+Это каркас до удаления ненужных частей, а не обязательный итоговый набор файлов каждого маршрута. У тонкого адаптера,
+который только возвращает готовый экран, после генерации удали неиспользуемые CSS Module и тип свойств. Не добавляй
+ему DOM или искусственные свойства ради сохранения файлов. Если стили и свойства нужны, оставь их в показанных
+`styles/` и `types/` по [`общей структуре компонентов`](../ui/README.md#базовая-структура).
+
+Начальный шаблон использует имя сущности без ролевого суффикса: например, `home.tsx` и `types/home-props.type.ts`.
+При адаптации к `HomeRoute` или `HomeScreen` согласованно переименуй реализацию, тип свойств и их импорты и экспорты.
+У внутренних компонентов `app/router` фасет не появляется; `app-router.tsx` остаётся связующей конфигурацией без
+компонентного каркаса.
 
 Подключай небольшой начальный или служебный маршрут статически через `index.ts`. Используй `lazy.ts`, только когда
 отдельный маршрут или ветка подключает сценарий и зависимости, которые не нужны при каждом запуске. Подтверди решение
@@ -128,6 +174,8 @@ export { AccountRoute as Component } from './account.route'
 - Роутер создан через `createBrowserRouter` и подключён через `RouterProvider`.
 - Дерево URL и глобальные ошибки маршрутов принадлежат `app`.
 - Маршрутный адаптер принадлежит `compositions/routes`, экранный сценарий — `compositions/screens`.
+- Новые компоненты созданы из общего шаблона; нужные стили и типы остались в `styles/` и `types/`, а ненужные части
+  каркаса удалены без добавления фиктивных свойств или DOM.
 - Статический импорт проходит через `index.ts`, динамический — через `lazy.ts` маршрутного юнита.
 - Корневой маршрут задаёт `hydrateFallbackElement` с общим `RoutePending`.
 - REST GET не выполняется через `loader`, а изменение — через `action`.

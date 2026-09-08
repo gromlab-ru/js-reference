@@ -6,21 +6,28 @@
 
 ## Структура
 
-Для нового приложения создай:
+Для нового приложения сначала создай внутренний `ThemeProvider` по
+[`инструкции генерации TSX`](../../application/ui/tsx-generation.md), используя `ui-component` и каталог вывода
+`src/ui/themes/providers`. Затем добавь конфигурацию, общие стили и фасет владельца `ui/themes`:
 
 ```text
 src/ui/themes/
 ├── index.ts
-├── theme-provider.tsx
 ├── config/
 │   └── theme.config.ts
-├── styles/
-│   ├── index.css
-│   ├── media.css
-│   └── variables.css
-└── types/
-    └── theme-provider-props.type.ts
+├── providers/
+│   └── theme-provider/
+│       ├── theme-provider.tsx
+│       └── types/
+│           └── theme-provider-props.type.ts
+└── styles/
+    ├── index.css
+    ├── media.css
+    └── variables.css
 ```
+
+У провайдера нет собственного DOM и CSS Module. Удали соответствующие части заготовки, но не общие стили темы.
+Его папка не получает фасет: провайдер использует внутреннюю конфигурацию `ui/themes` и остаётся реализацией этого юнита.
 
 Хук цветовой схемы добавляй только при наличии потребителя:
 
@@ -98,7 +105,7 @@ export const theme = createTheme({
 
 ## ThemeProvider
 
-Создай внутренний тип свойств в `types/theme-provider-props.type.ts`:
+В созданном `providers/theme-provider/types/theme-provider-props.type.ts` оставь нужный провайдеру тип свойств:
 
 ```ts
 import type { ReactNode } from 'react'
@@ -114,13 +121,13 @@ export type ThemeProviderProps = {
 }
 ```
 
-Создай `theme-provider.tsx`:
+Адаптируй созданный `providers/theme-provider/theme-provider.tsx`:
 
 ```tsx
 import { MantineProvider } from '@mantine/core'
-import { theme } from './config/theme.config'
+import { theme } from '../../config/theme.config'
 import type { ThemeProviderProps } from './types/theme-provider-props.type'
-import './styles/index.css'
+import '../../styles/index.css'
 
 /**
  * Подключает тему Mantine ко всему приложению.
@@ -145,13 +152,13 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
 Опубликуй провайдер в `index.ts`:
 
 ```ts
-export { ThemeProvider } from './theme-provider'
+export { ThemeProvider } from './providers/theme-provider/theme-provider'
 ```
 
 Тип `ThemeProviderProps` остаётся внутренним, пока он не нужен внешнему потребителю.
 
 Проверяемая реализация находится в
-[`demo-app/src/ui/themes/theme-provider.tsx`](../../../demo-app/src/ui/themes/theme-provider.tsx).
+[`ThemeProvider`](../../../demo-app/src/ui/themes/providers/theme-provider/theme-provider.tsx).
 
 ## Подключение к приложению
 

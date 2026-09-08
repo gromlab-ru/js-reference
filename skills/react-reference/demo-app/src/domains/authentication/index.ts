@@ -10,7 +10,7 @@ export { useAuthenticationStatus } from './hooks/use-authentication-status/use-a
 export { useGetCurrentSession } from './hooks/use-get-current-session/use-get-current-session.hook'
 export { logout } from './operations/logout.operation'
 export { logoutRejectedAuthentication } from './operations/logout-rejected-authentication.operation'
-export { AuthenticationProvider } from './providers/authentication-provider'
+export { AuthenticationProvider } from './providers/authentication-provider/authentication-provider'
 export type { CurrentSession } from './types/current-session.type'
 export type { SignInInput } from './types/sign-in-input.type'
 export { AuthGuard } from './ui/auth-guard/auth-guard'

@@ -118,11 +118,14 @@ Public domain SWR hook хранит клиентскую проекцию server
 Проверяемая цепочка находится в
 [`get-current-session.adapter.ts`](../../../demo-app/src/domains/authentication/adapters/get-current-session.adapter.ts),
 [`logout-rejected-authentication.operation.ts`](../../../demo-app/src/domains/authentication/operations/logout-rejected-authentication.operation.ts)
-и [`authentication-provider.tsx`](../../../demo-app/src/domains/authentication/providers/authentication-provider.tsx).
+и [`authentication-provider.tsx`](../../../demo-app/src/domains/authentication/providers/authentication-provider/authentication-provider.tsx).
 
 ## Context и Provider
 
 Context используй для стабильной dependency или scoped contract в React tree, а не как универсальный mutable store. Provider оправдан, когда создаёт scope, экземпляр store, dependency или lifecycle resource. Не создавай Provider только ради сокрытия обычного import через публичный фасет.
+
+Новые `.tsx` для `Provider` и компонентов проверки доступа, включая `AuthGuard`, создавай через `npx @gromlab/create`
+по [`правилам создания TSX`](../ui/tsx-generation.md). Отсутствие собственного DOM не отменяет генерацию.
 
 ## Existing state manager
 

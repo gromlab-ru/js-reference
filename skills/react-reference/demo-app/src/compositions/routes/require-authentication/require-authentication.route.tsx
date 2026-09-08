@@ -2,7 +2,6 @@ import { Alert, Button, Center, Container, Loader, Stack, Text, Title } from '@m
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { AuthGuard } from 'domains/authentication'
 import styles from './styles/require-authentication.module.css'
-import type { RequireAuthenticationRouteProps } from './types/require-authentication-route-props.type'
 
 /**
  * Связывает границу авторизации с защищённой маршрутной веткой.
@@ -12,7 +11,7 @@ import type { RequireAuthenticationRouteProps } from './types/require-authentica
  *  - отображения маршрутных состояний проверки сессии
  *  - подключения защищённой ветки через Outlet
  */
-export const RequireAuthenticationRoute = (_props: RequireAuthenticationRouteProps) => {
+export const RequireAuthenticationRoute = () => {
   const location = useLocation()
   const returnTo = `${location.pathname}${location.search}${location.hash}`
 

@@ -139,7 +139,7 @@ terminal `401` обрабатывает вызывающий domain adapter че
 
 - [Пакет в npm](https://www.npmjs.com/package/@gromlab/rest-api-codegen)
 - [Репозиторий и официальная документация](https://github.com/gromlab-ru/rest-api-codegen)
-- [Agent skill `rest-api-codegen-ru`](../../../../rest-api-codegen-ru/SKILL.md)
+- [Порядок загрузки профильного skill](../../../SKILL.md#профильные-skills)
 
 Используй доступный агенту skill `rest-api-codegen-ru`. Если его нет, установи командой:
 

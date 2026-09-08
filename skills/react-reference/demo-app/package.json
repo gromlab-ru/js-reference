@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "create": "npx --yes @gromlab/create@0.2.0 --skip-update",
     "sprites": "npx --yes @gromlab/svg-sprites@2.1.0 src/infra/app-icons/svg-sprite.config.json",
     "predev": "npm run sprites",
     "dev": "vite",

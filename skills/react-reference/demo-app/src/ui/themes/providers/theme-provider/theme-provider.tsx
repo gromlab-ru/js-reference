@@ -1,7 +1,7 @@
 import { MantineProvider } from '@mantine/core'
-import { theme } from './config/theme.config'
+import { theme } from '../../config/theme.config'
 import type { ThemeProviderProps } from './types/theme-provider-props.type'
-import './styles/index.css'
+import '../../styles/index.css'
 
 /**
  * Подключает общую визуальную тему Mantine к дочернему дереву приложения.

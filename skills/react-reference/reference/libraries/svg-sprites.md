@@ -65,11 +65,13 @@ metadata; generated-файлы не редактируются.
 
 ## Использование
 
-Импортируй generated component из public entry sprite-модуля:
+Если компонент-потребитель новый, сначала создай его по
+[`инструкции генерации TSX`](../application/ui/tsx-generation.md). Затем импортируй компонент спрайта через фасет
+его владельца. Сам `AppIcon` остаётся результатом `@gromlab/svg-sprites`, а не заготовкой `@gromlab/create`:
 
 ```tsx
 import { AppIcon } from 'infra/app-icons'
-import styles from './search-button.module.css'
+import styles from './styles/search-button.module.css'
 
 /**
  * Запускает поиск и показывает его пиктограмму.
@@ -127,13 +129,25 @@ Viewer нужен человеку для визуальной проверки 
 npm install --save-dev @gromlab/svg-sprites
 ```
 
-Создай служебный маршрутный юнит с динамическим фасетом `src/compositions/routes/svg-sprites/lazy.ts`:
+Для этого динамического потребителя опубликуй manifest через `src/infra/app-icons/lazy.ts`, не открывая глубокий
+импорт созданного каталога:
+
+```ts
+export { default } from './.svg-sprite/svg-sprite.manifest.js'
+```
+
+Экспорт `default` сохраняет форму модуля manifest, которую принимает загрузчик `SpriteViewer`.
+
+Создай служебный маршрут через `ui-unit` по
+[`инструкции генерации TSX`](../application/ui/tsx-generation.md). Используй имя `svg-sprites` и каталог вывода
+`src/compositions/routes`. Удали ненужные тип свойств и CSS Module. Реализацию оставь в
+`src/compositions/routes/svg-sprites/svg-sprites.tsx`:
 
 ```tsx
 import { SpriteViewer } from '@gromlab/svg-sprites/react'
 
 const sources = [
-  () => import('infra/app-icons/.svg-sprite/svg-sprite.manifest.js'),
+  () => import('infra/app-icons/lazy')
 ] as const
 
 /**
@@ -142,12 +156,19 @@ const sources = [
  * Используется для:
  *  - визуальной проверки и настройки иконок в разработке
  */
-export const Component = () => {
+export const SvgSprites = () => {
   return <SpriteViewer sources={sources} title="Иконки проекта" />
 }
 ```
 
-Подключи route к React Router только в development:
+Замени начальный `index.ts` на `src/compositions/routes/svg-sprites/lazy.ts`. Этот фасет только публикует компонент,
+а не содержит JSX или реализацию:
+
+```ts
+export { SvgSprites as Component } from './svg-sprites'
+```
+
+Подключи маршрут к React Router только в режиме разработки:
 
 ```tsx
 import { createBrowserRouter } from 'react-router-dom'

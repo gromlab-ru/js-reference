@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { useSWRConfig } from 'swr'
-import { getCurrentSessionKey } from '../hooks/use-get-current-session/get-current-session-key'
-import { useGetCurrentSession } from '../hooks/use-get-current-session/use-get-current-session.hook'
-import { isPrivateCacheKey } from '../hooks/use-authentication-actions/is-private-cache-key'
-import { useAuthenticationStatus } from '../hooks/use-authentication-status/use-authentication-status.hook'
-import { authenticationStore } from '../stores/authentication.store'
+import { getCurrentSessionKey } from '../../hooks/use-get-current-session/get-current-session-key'
+import { useGetCurrentSession } from '../../hooks/use-get-current-session/use-get-current-session.hook'
+import { isPrivateCacheKey } from '../../hooks/use-authentication-actions/is-private-cache-key'
+import { useAuthenticationStatus } from '../../hooks/use-authentication-status/use-authentication-status.hook'
+import { authenticationStore } from '../../stores/authentication.store'
 import type { AuthenticationProviderProps } from './types/authentication-provider-props.type'
 
 /**
