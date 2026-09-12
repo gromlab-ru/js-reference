@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node src/skills/build.mjs"
+    "check:skills": "node scripts/check-skills.mjs",
+    "test:skills": "node --test scripts/*.test.mjs"
+  },
+  "devDependencies": {
+    "yaml": "2.9.0"
   }
 }
