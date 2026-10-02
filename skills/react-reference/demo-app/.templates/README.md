@@ -2,7 +2,7 @@
 
 Этот каталог содержит рабочие шаблоны демо. Перед созданием файла примени
 [`обязательную инструкцию генерации TSX`](../../reference/application/components/tsx-generation.md) и прочитай все файлы
-выбранного шаблона. Механика CLI описана в [`@gromlab/create`](../../reference/libraries/create/README.md).
+выбранного шаблона. Механика CLI описана в [`@gromlab/template-file-generator`](../../reference/libraries/create/README.md).
 
 | Шаблон | Результат |
 | --- | --- |
@@ -21,7 +21,7 @@ npm run create -- ui-component status-label src/compositions/screens/account/ui
 npm run create -- ui-unit empty-state src/ui
 ```
 
-Команда `create` запускает закреплённый `@gromlab/create` через `npx`. Аргумент пути указывает родительский каталог,
+Команда `create` запускает закреплённый `@gromlab/template-file-generator` через `npx`. Аргумент пути указывает родительский каталог,
 а папку `status-label` или `empty-state` создаёт CLI по выбранному шаблону. Примеры применяются только для новой сущности
 с подтверждённым владельцем; не запускай их поверх существующих файлов.
 

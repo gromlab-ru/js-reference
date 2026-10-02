@@ -67,7 +67,7 @@ metadata; generated-файлы не редактируются.
 
 Если компонент-потребитель новый, сначала создай его по
 [`инструкции генерации TSX`](../application/components/tsx-generation.md). Затем импортируй компонент спрайта через фасет
-его владельца. Сам `AppIcon` остаётся результатом `@gromlab/svg-sprites`, а не заготовкой `@gromlab/create`:
+его владельца. Сам `AppIcon` остаётся результатом `@gromlab/svg-sprites`, а не заготовкой `@gromlab/template-file-generator`:
 
 ```tsx
 import { AppIcon } from 'infra/app-icons'

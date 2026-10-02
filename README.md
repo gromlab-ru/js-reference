@@ -26,10 +26,11 @@ Components и серверному коду.
 
 ## Рекомендуемая установка
 
-Для полноценной работы `react-reference` установи его вместе с тремя профильными skills:
+Для полноценной работы `react-reference` установи его вместе с четырьмя профильными skills:
 
 ```bash
 npx skills add gromlab-ru/js-reference --skill react-reference
+npx skills add gromlab-ru/template-file-generator --skill template-generation
 npx skills add gromlab-ru/unit-architecture --skill unit-architecture
 npx skills add gromlab-ru/rest-api-codegen --skill rest-api-codegen-ru
 npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
@@ -39,6 +40,7 @@ npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
 
 | Skill | Для чего нужен | Репозиторий |
 | --- | --- | --- |
+| `template-generation` | Создаёт файлы через `@gromlab/template-file-generator` и настраивает локальные шаблоны | [`gromlab-ru/template-file-generator`](https://github.com/gromlab-ru/template-file-generator) |
 | `unit-architecture` | Определяет владельцев, слои, юниты, фасеты и допустимые зависимости | [`gromlab-ru/unit-architecture`](https://github.com/gromlab-ru/unit-architecture) |
 | `rest-api-codegen-ru` | Создаёт и организует REST-клиенты из OpenAPI или ручных операций | [`gromlab-ru/rest-api-codegen`](https://github.com/gromlab-ru/rest-api-codegen) |
 | `svg-sprites-ru` | Настраивает и диагностирует `@gromlab/svg-sprites` | [`gromlab-ru/svg-sprites`](https://github.com/gromlab-ru/svg-sprites) |
@@ -63,14 +65,14 @@ npx skills add gromlab-ru/js-reference --skill react-reference
 Обнови установленный набор отдельной командой:
 
 ```bash
-npx skills update react-reference unit-architecture rest-api-codegen-ru svg-sprites-ru
+npx skills update react-reference template-generation unit-architecture rest-api-codegen-ru svg-sprites-ru
 ```
 
 ## Разработка и проверка skills
 
 Собственные skills редактируются непосредственно в `skills/<имя>/`. Имя `SKILL.md` зарезервировано для единственной точки входа каждого skill. Его `name` должен совпадать с именем каталога и быть уникальным во всём публикуемом репозитории; `name` и `description` должны быть непустыми строками в корректном YAML-frontmatter.
 
-Установленные сторонние skills находятся локально в `.agents/skills/` и `.claude/skills/` и исключены из Git. Их источники учитываются в `skills-lock.json`. После клонирования установи необходимые зависимости командами из раздела «Рекомендуемая установка»; для работы над этим репозиторием достаточно трёх профильных skills.
+Установленные сторонние skills находятся локально в `.agents/skills/` и `.claude/skills/` и исключены из Git. Их источники учитываются в `skills-lock.json`. После клонирования установи необходимые зависимости командами из раздела «Рекомендуемая установка»; для работы над этим репозиторием достаточно четырёх профильных skills.
 
 Из корня репозитория выполни:
 

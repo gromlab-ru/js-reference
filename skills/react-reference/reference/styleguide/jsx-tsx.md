@@ -4,7 +4,7 @@
 компонента определяй по [`application/architecture/README.md`](../application/architecture/README.md) и
 [`application/architecture/units/README.md`](../application/architecture/units/README.md).
 
-Каждый новый `.tsx` в приложении создавай через `npx @gromlab/create` по
+Каждый новый `.tsx` в приложении создавай через `npx @gromlab/template-file-generator` по
 [`правилам создания TSX`](../application/components/tsx-generation.md), кроме указанных там исключений. Выбранный режим стиля
 не отменяет обязательный способ создания. Существующий `.tsx` редактируй без перегенерации.
 

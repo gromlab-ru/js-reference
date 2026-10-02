@@ -13,6 +13,12 @@
       "skillPath": "skills/svg-sprites-ru/SKILL.md",
       "computedHash": "cc9370059c7bd50250035013681b25546c86b744dde00e7afcaacae3cdada32f"
     },
+    "template-generation": {
+      "source": "gromlab-ru/template-file-generator",
+      "sourceType": "github",
+      "skillPath": "skills/template-generation/SKILL.md",
+      "computedHash": "410a01a1252b43948166b49348f1129c86f047390feb05a2d95da2e1da0e7a01"
+    },
     "unit-architecture": {
       "source": "gromlab-ru/unit-architecture",
       "sourceType": "github",

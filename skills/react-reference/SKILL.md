@@ -21,7 +21,7 @@ description: "Использовать при создании и изменен
 
 ## Создание TSX
 
-Новые `.tsx` создавай только через `npx @gromlab/create` из локальных шаблонов приложения. Это обязательный шаг для
+Новые `.tsx` создавай только через `npx @gromlab/template-file-generator` из локальных шаблонов приложения. Это обязательный шаг для
 всех прикладных областей, включая провайдеры, гарды, маршрутные границы и внутренние компоненты без собственного DOM.
 Область действия, системные исключения и порядок адаптации определяет
 [`инструкция генерации`](reference/application/components/tsx-generation.md). Не заменяй запуск CLI ручным созданием или
@@ -34,6 +34,7 @@ description: "Использовать при создании и изменен
 
 | Область | Skill | Запасной источник |
 | --- | --- | --- |
+| Генерация файлов и настройка локальных шаблонов | `template-generation` | [`gromlab-ru/template-file-generator`](https://github.com/gromlab-ru/template-file-generator) |
 | Архитектурные границы и зависимости | `unit-architecture` | [`gromlab-ru/unit-architecture`](https://github.com/gromlab-ru/unit-architecture) |
 | REST-клиенты | `rest-api-codegen-ru` | [`gromlab-ru/rest-api-codegen`](https://github.com/gromlab-ru/rest-api-codegen) |
 | SVG-спрайты | `svg-sprites-ru` | [`gromlab-ru/svg-sprites`](https://github.com/gromlab-ru/svg-sprites) |
@@ -76,7 +77,7 @@ description: "Использовать при создании и изменен
 
 | Библиотека | Что находится внутри |
 | --- | --- |
-| [@gromlab/create](reference/libraries/create/README.md) | Как настроить локальные шаблоны, запускать закреплённую версию генератора и создавать начальный каркас TSX без перезаписи существующих файлов. |
+| [@gromlab/template-file-generator](reference/libraries/create/README.md) | Как настроить локальные шаблоны, запускать закреплённую версию генератора и создавать начальный каркас TSX без перезаписи существующих файлов. |
 | [Mantine](reference/libraries/mantine/README.md) | Как установить библиотеку компонентов, настроить общую тему, подключить проектный `ThemeProvider` и использовать публичные свойства и CSS-переменные. |
 | [PostCSS](reference/libraries/postcss/README.md) | Как установить и настроить обработку CSS, создать начальные файлы переменных и медиавыражений, подключить общие стили и проверить сборку. |
 | [@gromlab/rest-api-codegen](reference/libraries/rest-api-codegen/README.md) | Как создать типизированный REST-клиент из OpenAPI или ручного описания, настроить адреса, авторизацию и обработку ошибок, собрать API-клиент или общий SDK. Библиотека избавляет от отдельных обёрток над `fetch` для каждой операции. |
