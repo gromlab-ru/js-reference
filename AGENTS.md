@@ -27,7 +27,8 @@ skills/
 ├── tsx-styleguide/       React-компоненты в TSX; использует ts-styleguide
 ├── postcss-styleguide/   CSS и CSS Modules с PostCSS
 ├── html-styleguide/      HTML
-└── react-reference/     разработка клиентских React SPA
+├── react-reference/     разработка клиентских React SPA
+└── nextjs-reference/    Next.js App Router, серверные компоненты и SSR
 ```
 
 `skills/` является единственным источником истины. Каждый skill хранится и редактируется целиком в `skills/<skill>/` без общего исходного каталога, генерации, копирования между skills и символических ссылок.
@@ -43,7 +44,8 @@ YAML-заголовке.
 
 Установленные сторонние skills находятся локально в `.agents/skills/` и `.claude/skills/` и исключены из Git.
 Их источники учитываются в `skills-lock.json`. Для работы над репозиторием установи четыре внешних профильных skill
-из списка зависимостей [`react-reference` в README](README.md#react-reference). Собственные skills уже находятся
+из списка зависимостей [`react-reference` в README](README.md#react-reference); они также используются в
+[`nextjs-reference`](README.md#nextjs-reference). Собственные skills уже находятся
 в `skills/` и редактируются там напрямую.
 
 После изменения поставки выполни из корня репозитория:
@@ -71,6 +73,10 @@ npm run test:skills
 размещай непосредственно в `SKILL.md`. Отдельные справочные документы создавай только для действительно дополнительного
 материала; не выноси в них основной стайлгайд. Готовые ресурсы, например `value-predicates`, храни рядом со своей
 инструкцией подключения. Структуру `react-reference` определяет отдельный раздел ниже.
+
+`nextjs-reference` хранит собственный процесс App Router и SSR в `reference/application/`, настройки библиотек в
+`reference/libraries/`, начальные шаблоны в `assets/templates/`. Начинай с его `SKILL.md`; не переноси в него
+браузерные ограничения `react-reference` и не считай структуру React-демо обязательной для Next.js.
 
 # Порядок работы агента
 
