@@ -124,7 +124,7 @@ npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
 - `postcss-styleguide` — CSS и CSS Modules.
 - `html-styleguide` — самостоятельные HTML-файлы.
 - `unit-architecture` — владельцы, фасеты и зависимости.
-- `template-generation` — создание файлов из локальных шаблонов.
+- `template-generation-ru` — создание файлов из локальных шаблонов.
 - `rest-api-codegen-ru` — REST-клиенты и транспорт SSR.
 - `svg-sprites-ru` — SVG-спрайты в режиме Next.js App Router.
 
@@ -135,7 +135,7 @@ npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
 ```bash
 npx skills add gromlab-ru/js-reference --skill nextjs-reference ts-styleguide tsx-styleguide postcss-styleguide html-styleguide
 npx skills add gromlab-ru/unit-architecture --skill unit-architecture
-npx skills add gromlab-ru/template-file-generator --skill template-generation
+npx skills add gromlab-ru/template-file-generator --skill template-generation-ru
 npx skills add gromlab-ru/rest-api-codegen --skill rest-api-codegen-ru
 npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
 ```

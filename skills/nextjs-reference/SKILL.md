@@ -73,7 +73,7 @@ SSR-совместимым без проверки.
 | Skill | Задача | Запасной источник |
 | --- | --- | --- |
 | `unit-architecture` | Владельцы, фасеты, зависимости и вложенность | [unit-architecture](https://github.com/gromlab-ru/unit-architecture) |
-| `template-generation` | Локальные шаблоны и запуск генератора | [template-file-generator](https://github.com/gromlab-ru/template-file-generator) |
+| `template-generation-ru` | Локальные шаблоны и запуск генератора | [template-file-generator](https://github.com/gromlab-ru/template-file-generator) |
 | `rest-api-codegen-ru` | REST-клиенты, операции, транспорт и SSR | [rest-api-codegen](https://github.com/gromlab-ru/rest-api-codegen) |
 | `svg-sprites-ru` | Генерация спрайта в точном режиме Next.js | [svg-sprites](https://github.com/gromlab-ru/svg-sprites) |
 
