@@ -1,7 +1,7 @@
 /**
  * Исключает только null и undefined из типа значения.
  *
- * Сохраняет валидные falsy-значения, включая 0, false и пустую строку.
+ * Сохраняет допустимые значения 0, false и пустую строку.
  */
 export const isDefined = <T>(value: T | null | undefined): value is T => {
   return value != null
@@ -10,32 +10,32 @@ export const isDefined = <T>(value: T | null | undefined): value is T => {
 /**
  * Проверяет, что значение равно null или undefined.
  *
- * Не считает отсутствующими другие falsy-значения.
+ * Не считает отсутствующими 0, false и пустую строку.
  */
 export const isNotDefined = <T>(value: T | null | undefined): value is null | undefined => {
   return value == null
 }
 
 /**
- * Сужает unknown-значение до string.
+ * Проверяет, что неизвестное значение является строкой.
  *
- * Проверяет только runtime-тип без требований к содержимому строки.
+ * Проверяет только тип без требований к содержимому строки.
  */
 export const isString = (value: unknown): value is string => {
   return typeof value === 'string'
 }
 
 /**
- * Сужает unknown-значение до конечного number.
+ * Проверяет, что неизвестное значение является конечным числом.
  *
- * Исключает NaN, Infinity и значения других runtime-типов.
+ * Исключает NaN, Infinity и значения других типов.
  */
 export const isNumber = (value: unknown): value is number => {
   return typeof value === 'number' && Number.isFinite(value)
 }
 
 /**
- * Сужает unknown-значение до boolean.
+ * Проверяет, что неизвестное значение является логическим.
  *
  * Принимает только литеральные значения true и false.
  */
@@ -62,7 +62,7 @@ export const isArray = (value: unknown): value is unknown[] => {
 }
 
 /**
- * Проверяет массив и каждый его элемент переданным type guard.
+ * Проверяет массив и каждый его элемент переданным предикатом.
  *
  * Сужает unknown до массива элементов подтверждённого типа.
  */
@@ -73,14 +73,14 @@ export const isArrayOf = <T>(value: unknown, isItem: (item: unknown) => item is 
 /**
  * Считает null, undefined и массив без элементов пустым списком.
  *
- * Предназначен для UI-условий с единым empty state.
+ * Предназначен для условий с единой обработкой пустого списка.
  */
 export const isEmptyArray = (value: readonly unknown[] | null | undefined): boolean => {
   return !Array.isArray(value) || value.length === 0
 }
 
 /**
- * Сужает существующий массив до non-empty tuple.
+ * Сужает существующий массив до непустого кортежа.
  *
  * Гарантирует наличие первого элемента после успешной проверки.
  */
@@ -89,7 +89,7 @@ export const isNonEmptyArray = <T>(value: readonly T[] | null | undefined): valu
 }
 
 /**
- * Проверяет object-like значение, исключая null и массивы.
+ * Проверяет, что значение является объектом, исключая null и массивы.
  *
  * Не проверяет конкретные поля полученной записи.
  */
@@ -100,16 +100,16 @@ export const isRecord = (value: unknown): value is Record<PropertyKey, unknown> 
 /**
  * Проверяет наличие собственного свойства объекта и сужает его тип.
  *
- * Используется после проверки object-like значения через isRecord.
+ * Используется после проверки объекта через isRecord.
  */
 export const hasOwn = <K extends PropertyKey>(value: object, key: K): value is Record<K, unknown> => {
   return Object.prototype.hasOwnProperty.call(value, key)
 }
 
 /**
- * Проверяет вхождение значения в readonly-список допустимых литералов.
+ * Проверяет вхождение значения в неизменяемый список допустимых литералов.
  *
- * Сужает unknown до union элементов переданного списка.
+ * Сужает unknown до объединения типов элементов переданного списка.
  */
 export const isOneOf = <T extends readonly unknown[]>(value: unknown, values: T): value is T[number] => {
   return values.some((item) => item === value)

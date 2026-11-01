@@ -58,7 +58,8 @@
 ## Порядок сборки приложения
 
 1. Проверь существующие команды и настройки. Для нового приложения настрой Vite и алиасы слоёв по
-   [`Платформе`](../platform/README.md), TypeScript по [`правилам кода`](../../styleguide/typescript/README.md).
+   [`Платформе`](../platform/README.md). Для написания TypeScript загрузи `ts-styleguide`, для изменения `index.html` —
+   `html-styleguide`.
 2. Настрой единственный локальный набор шаблонов и команду `create` по
    [`инструкции генератора`](../../libraries/create/README.md#настройка-приложения) до создания компонентов.
 3. Подключи Mantine и публичный `ThemeProvider` по [`инструкции библиотеки`](../../libraries/mantine/README.md).

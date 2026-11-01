@@ -69,8 +69,8 @@ export type { EmptyStateProps } from './types/empty-state-props.type'
 - Межюнитные потребители импортируют UI только через фасет.
 - Не добавляй обёртку или псевдоним, который только повторяет внутренний экспорт.
 
-Правила TSX и свойств компонентов находятся в [`styleguide/jsx-tsx.md`](../../../styleguide/jsx-tsx.md), правила CSS
-Modules — в [`styleguide/css.md`](../../../styleguide/css.md).
+Для написания TSX и свойств компонентов загрузи `tsx-styleguide` вместе с `ts-styleguide`.
+Для написания CSS Modules загрузи `postcss-styleguide`.
 
 ## Проверка
 

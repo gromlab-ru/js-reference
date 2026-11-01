@@ -1,9 +1,34 @@
 # JS Reference
 
-Репозиторий содержит skills с правилами разработки JavaScript- и TypeScript-приложений. Skill помогает агенту выбрать
-принятое в проекте решение, определить владельца кода, выполнить изменение и проверить результат.
+Репозиторий содержит skills с правилами написания TypeScript, TSX, HTML и CSS и референс разработки React-приложений.
+Skill помогает агенту выбрать принятое решение, выполнить изменение и проверить результат.
 
 ## Skills репозитория
+
+### Каноны написания кода
+
+| Skill | Ответственность |
+| --- | --- |
+| `ts-styleguide` | TypeScript: оформление, именование, функции, типы, импорты, JSDoc и проверки значений. Включает `value-predicates`. |
+| `tsx-styleguide` | React-компоненты в TSX: свойства, JSX, условное отображение, хуки, декомпозиция и JSDoc компонентов. |
+| `postcss-styleguide` | CSS и CSS Modules с PostCSS: классы, вложенность, модификаторы, переменные и адаптивность. |
+| `html-styleguide` | HTML: оформление, элементы, атрибуты, семантика и комментарии. |
+
+Эти skills применяются в разных проектах без установки `react-reference`. `tsx-styleguide` использует `ts-styleguide`;
+остальные скилы канонов независимы друг от друга. Языковые правила охватывают TypeScript и TSX; чистый JavaScript
+в них не описывается.
+
+Установи нужный skill по имени. Например, для TypeScript:
+
+```bash
+npx skills add gromlab-ru/js-reference --skill ts-styleguide
+```
+
+Для React-компонентов установи оба связанных скила:
+
+```bash
+npx skills add gromlab-ru/js-reference --skill ts-styleguide tsx-styleguide
+```
 
 ### `react-reference`
 
@@ -24,19 +49,23 @@ Components и серверному коду.
 Документация находится в [`skills/react-reference/`](skills/react-reference/), а согласованное запускаемое приложение — в
 [`skills/react-reference/demo-app/`](skills/react-reference/demo-app/).
 
+`react-reference` определяет разработку React-приложения и обращается к скилам канонов по имени. Правила написания кода
+принадлежат профильным скилам; прикладные инструкции объясняют, когда их загрузить и применить.
+
 ## Рекомендуемая установка
 
-Для полноценной работы `react-reference` установи его вместе с четырьмя профильными skills:
+Для полноценной работы `react-reference` установи его вместе с четырьмя скилами канонов из этого репозитория
+и четырьмя профильными скилами инструментов и архитектуры:
 
 ```bash
-npx skills add gromlab-ru/js-reference --skill react-reference
+npx skills add gromlab-ru/js-reference --skill react-reference ts-styleguide tsx-styleguide postcss-styleguide html-styleguide
 npx skills add gromlab-ru/template-file-generator --skill template-generation
 npx skills add gromlab-ru/unit-architecture --skill unit-architecture
 npx skills add gromlab-ru/rest-api-codegen --skill rest-api-codegen-ru
 npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
 ```
 
-Каждый профильный skill уточняет свою область и не заменяет правила `react-reference`:
+Следующие skills определяют применение инструментов и архитектуры:
 
 | Skill | Для чего нужен | Репозиторий |
 | --- | --- | --- |
@@ -50,7 +79,7 @@ npx skills add gromlab-ru/svg-sprites --skill svg-sprites-ru
 
 ## Установка только `react-reference`
 
-Если смежные skills уже установлены, добавь только skill этого репозитория:
+Если смежные skills уже установлены, добавь только `react-reference`:
 
 ```bash
 npx skills add gromlab-ru/js-reference --skill react-reference
@@ -65,14 +94,19 @@ npx skills add gromlab-ru/js-reference --skill react-reference
 Обнови установленный набор отдельной командой:
 
 ```bash
-npx skills update react-reference template-generation unit-architecture rest-api-codegen-ru svg-sprites-ru
+npx skills update react-reference ts-styleguide tsx-styleguide postcss-styleguide html-styleguide template-generation unit-architecture rest-api-codegen-ru svg-sprites-ru
 ```
 
 ## Разработка и проверка skills
 
 Собственные skills редактируются непосредственно в `skills/<имя>/`. Имя `SKILL.md` зарезервировано для единственной точки входа каждого skill. Его `name` должен совпадать с именем каталога и быть уникальным во всём публикуемом репозитории; `name` и `description` должны быть непустыми строками в корректном YAML-frontmatter.
 
-Установленные сторонние skills находятся локально в `.agents/skills/` и `.claude/skills/` и исключены из Git. Их источники учитываются в `skills-lock.json`. После клонирования установи необходимые зависимости командами из раздела «Рекомендуемая установка»; для работы над этим репозиторием достаточно четырёх профильных skills.
+Установленные сторонние skills находятся локально в `.agents/skills/` и `.claude/skills/` и исключены из Git. Их источники
+учитываются в `skills-lock.json`. Для работы над этим репозиторием установи четыре внешних профильных skill командами
+из раздела «Рекомендуемая установка». Собственные пять skills уже находятся в `skills/` и редактируются там напрямую.
+
+Между skills обращайся по имени и указывай задачу, ради которой нужно загрузить skill. Не связывай их относительными
+путями или ссылками на внутренние документы другого skill. Внутри одного skill используй локальные ссылки.
 
 Из корня репозитория выполни:
 

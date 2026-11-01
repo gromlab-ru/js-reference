@@ -26,8 +26,8 @@
 
 ## CSS Modules
 
-Размещение и выбор CSS Modules описаны в [`application/styling`](../application/styling/README.md), правила написания
-CSS — в [`styleguide/css.md`](../styleguide/css.md).
+Размещение и выбор CSS Modules описаны в [`application/styling`](../application/styling/README.md).
+Для написания CSS загрузи skill `postcss-styleguide` и примени его каноны.
 
 ## OAuth 2.0 / OpenID Connect
 
