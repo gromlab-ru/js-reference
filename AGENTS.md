@@ -143,6 +143,7 @@ skills/react-reference/
     │   ├── markup/
     │   ├── architecture/
     │   ├── data-fetching/
+    │   ├── authentication/
     │   ├── state-management/
     │   ├── ui/
     │   ├── forms/
