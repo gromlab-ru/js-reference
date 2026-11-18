@@ -26,12 +26,10 @@ export const isString = (value: unknown): value is string => {
 }
 
 /**
- * Проверяет, что неизвестное значение является конечным числом.
- *
- * Исключает NaN, Infinity и значения других типов.
+ * Проверяет тип number, включая NaN и бесконечности.
  */
 export const isNumber = (value: unknown): value is number => {
-  return typeof value === 'number' && Number.isFinite(value)
+  return typeof value === 'number'
 }
 
 /**
@@ -44,12 +42,10 @@ export const isBoolean = (value: unknown): value is boolean => {
 }
 
 /**
- * Проверяет, что значение является непустой непробельной строкой.
- *
- * Считает строку из одних пробельных символов пустой.
+ * Проверяет, что в строке есть хотя бы один непробельный символ.
  */
-export const isNonEmptyString = (value: unknown): value is string => {
-  return typeof value === 'string' && value.trim().length > 0
+export const isNonEmptyString = (value: string): boolean => {
+  return value.trim().length > 0
 }
 
 /**
@@ -62,12 +58,33 @@ export const isArray = (value: unknown): value is unknown[] => {
 }
 
 /**
- * Проверяет массив и каждый его элемент переданным предикатом.
- *
- * Сужает unknown до массива элементов подтверждённого типа.
+ * Метка существует только в типах: обычный T[] может содержать пропуски.
  */
-export const isArrayOf = <T>(value: unknown, isItem: (item: unknown) => item is T): value is T[] => {
-  return Array.isArray(value) && value.every(isItem)
+declare const DENSE_ARRAY: unique symbol
+
+/**
+ * Массив, в котором на момент проверки есть собственный элемент по каждому индексу.
+ */
+type DenseArray<T> = T[] & {
+  /** Отличает подтверждённый массив от произвольного T[] в ветке отказа. */
+  readonly [DENSE_ARRAY]: true
+}
+
+/**
+ * Проверяет каждый индекс внешнего массива, в том числе когда T допускает undefined.
+ */
+export const isArrayOf = <T>(value: unknown, isItem: (item: unknown) => item is T): value is DenseArray<T> => {
+  if (!isArray(value)) {
+    return false
+  }
+
+  for (let index = 0; index < value.length; index += 1) {
+    if (!hasOwn(value, index) || !isItem(value[index])) {
+      return false
+    }
+  }
+
+  return true
 }
 
 /**
@@ -85,7 +102,7 @@ export const isEmptyArray = (value: readonly unknown[] | null | undefined): bool
  * Гарантирует наличие первого элемента после успешной проверки.
  */
 export const isNonEmptyArray = <T>(value: readonly T[] | null | undefined): value is readonly [T, ...T[]] => {
-  return Array.isArray(value) && value.length > 0
+  return Array.isArray(value) && hasOwn(value, 0)
 }
 
 /**
