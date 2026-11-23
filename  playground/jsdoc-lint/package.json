@@ -1,0 +1,11 @@
+{
+  "name": "jsdoc-lint-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "biome lint --max-diagnostics=none"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "https://pkg.pr.new/biomejs/biome/@biomejs/biome@426c33de575da7ce7f4588727b9367125dfa6827"
+  }
+}

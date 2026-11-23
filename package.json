@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "check:skills": "node scripts/check-skills.mjs",
+    "test:jsdoc-biome": "node --test skills/jsdoc-standarts/tests/biome.test.mjs",
     "test:skills": "node --test scripts/*.test.mjs"
   },
   "devDependencies": {

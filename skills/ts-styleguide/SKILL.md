@@ -315,10 +315,8 @@ if (isArrayOf(response.data, isOrder)) {
 export const PAYMENT_STATUS = {
   /** Оплата ожидает подтверждения. */
   PENDING: 'pending',
-
   /** Оплата подтверждена. */
   PAID: 'paid',
-
   /** Оплата завершилась ошибкой. */
   FAILED: 'failed'
 } as const
@@ -362,7 +360,6 @@ export type PaymentStatus = (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
 export type OrderFilters = {
   /** Идентификатор владельца заказов. */
   userId?: string
-
   /** Статус заказа для фильтрации. */
   status?: OrderStatus
 }

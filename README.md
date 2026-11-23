@@ -11,6 +11,7 @@ React SPA, а `nextjs-reference` — с правилами Next.js App Router и
 | Скил | Назначение |
 | --- | --- |
 | [ts-styleguide](#ts-styleguide) | Написание TypeScript |
+| [jsdoc-standarts](#jsdoc-standarts) | Написание и проверка JSDoc в TypeScript |
 | [tsx-styleguide](#tsx-styleguide) | Написание React-компонентов |
 | [postcss-styleguide](#postcss-styleguide) | Написание CSS и CSS Modules |
 | [html-styleguide](#html-styleguide) | Написание HTML |
@@ -32,6 +33,23 @@ React SPA, а `nextjs-reference` — с правилами Next.js App Router и
 
 ```bash
 npx skills add gromlab-ru/js-reference --skill ts-styleguide
+```
+
+## jsdoc-standarts
+
+Правила JSDoc для констант, функций, объектов, интерфейсов, перечислений, классов и объявлений `type` в TypeScript,
+а также для React-компонентов в TSX.
+Шаблоны и примеры помогают объяснить смысл значений, условия создания экземпляра и результат вызова без пересказа реализации.
+Включает профиль Biome с подключённым плагином для проверки формы JSDoc и порядок ревью для проверки его смысла.
+
+### Зависимости
+
+Нет.
+
+### Установка
+
+```bash
+npx skills add gromlab-ru/js-reference --skill jsdoc-standarts
 ```
 
 ## tsx-styleguide

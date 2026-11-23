@@ -11,7 +11,7 @@
       "source": "gromlab-ru/svg-sprites",
       "sourceType": "github",
       "skillPath": "skills/svg-sprites-ru/SKILL.md",
-      "computedHash": "cc9370059c7bd50250035013681b25546c86b744dde00e7afcaacae3cdada32f"
+      "computedHash": "199ceac57a32817e08610736349920475d751f559e59d509174897c6fe1fcfed"
     },
     "template-generation": {
       "source": "gromlab-ru/template-file-generator",
@@ -23,7 +23,7 @@
       "source": "gromlab-ru/unit-architecture",
       "sourceType": "github",
       "skillPath": "skills/unit-architecture/SKILL.md",
-      "computedHash": "ec45499449583a4a3980f93d6bd10a3973c001d5675cee08dfe9d774aa1ff305"
+      "computedHash": "853c2ea474f070956976ad24dc9cc1834f51c3bdfc1e708d06fcc7d319a71bd3"
     }
   }
 }

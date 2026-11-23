@@ -24,6 +24,7 @@
 ```text
 skills/
 ├── ts-styleguide/        TypeScript и value-predicates
+├── jsdoc-standarts/      написание и проверка JSDoc в TypeScript
 ├── tsx-styleguide/       React-компоненты в TSX; использует ts-styleguide
 ├── postcss-styleguide/   CSS и CSS Modules с PostCSS
 ├── html-styleguide/      HTML

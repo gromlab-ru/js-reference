@@ -1,0 +1,11 @@
+{
+  "linter": {
+    "enabled": true,
+    "rules": { "correctness": { "useSingleJsDocAsterisk": "error" } }
+  },
+  "plugins": [{
+    "path": "./jsdoc.js",
+    "resolutionKind": "config",
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"]
+  }]
+}
