@@ -141,6 +141,64 @@ test('у членов, пересечений, конструктора и пе�
   ].sort())
 })
 
+test('у каждого события есть один пункт с пояснением в порядке объявления', t => {
+  const type = [
+    'export type DeliveryEvent =', "  | 'shipment.created'", "  | 'shipment.accepted_by_carrier'",
+    "  | 'shipment.arrived_at_sorting_center'", "  | 'shipment.received_by_recipient'"
+  ].join('\n')
+  const points = [
+    ' * - `shipment.created` — отправление зарегистрировано',
+    ' * - `shipment.accepted_by_carrier` — перевозчик принял посылку',
+    ' * - `shipment.arrived_at_sorting_center` — посылка поступила в центр',
+    ' * - `shipment.received_by_recipient` — подтверждено вручение получателю'
+  ]
+  const example = lines => ['/**', ' * Событие доставки.', ' *', ...lines, ' */', type].join('\n')
+  const issues = lint(t, {
+    'good.ts': example([...points, ' *   лично', ' *', ' * @see DeliveryHistory']),
+    'none.ts': example([]),
+    'missing.ts': example([points[0], points[1], points[3]]),
+    'wrong-order.ts': example([points[1], points[0], ...points.slice(2)]),
+    'duplicate.ts': example([...points, points[0]]),
+    'extra.ts': example([...points, ' * - `shipment.lost` — посылку не нашли']),
+    'empty.ts': example([...points.slice(0, 3), ' * - `shipment.received_by_recipient` —']),
+    'no-gap.ts': example(points).replace('\n *\n', '\n'),
+    'in-example.ts': example([' * ```md', ...points, ' * ```']),
+    'after-tag.ts': example([' * @example', ...points]),
+    'no-quotes.ts': example([points[0].replaceAll('`', ''), ...points.slice(1)])
+  })
+  assert.deepEqual(issues.map(d => [d.file, d.rule]).sort(), [
+    ['none.ts', 'VARIANTS'], ['missing.ts', 'VARIANTS'], ['wrong-order.ts', 'VARIANTS'],
+    ['duplicate.ts', 'VARIANTS'], ['extra.ts', 'VARIANTS'], ['empty.ts', 'LIST'],
+    ['in-example.ts', 'VARIANTS'], ['after-tag.ts', 'VARIANTS'], ['no-quotes.ts', 'VARIANTS'], ['no-gap.ts', 'PARAGRAPH']
+  ].sort())
+  assert.match(issues.find(d => d.file === 'missing.ts').message, /shipment\.arrived_at_sorting_center/)
+})
+
+test('сверяет числовые и строковые литералы, но не требует списка у других объединений', t => {
+  const bare = '/**\n * Значение из журнала доставки.\n */\n'
+  const numeric = [
+    '/**', ' * Коды выхода сортировщика.', ' *', ' * - `-1` — выход ещё не выбран',
+    ' * - `0` — выдача на станции', ' * - `0x10` — отправка на следующую станцию', ' */',
+    'type Route = (-1 | (0 | 0x10))'
+  ].join('\n')
+  const mixed = [
+    '/**', ' * Коды старого и нового форматов.', ' *', " * - `'1'` — строковый код",
+    ' * - `1` — числовой код', " * - `''` — код не передан", ' */', "type Code = '1' | 1 | ''"
+  ].join('\n')
+  const issues = lint(t, {
+    'numeric.ts': numeric, 'missing-number.ts': numeric.replace(' * - `0` — выдача на станции\n', ''),
+    'mixed.ts': mixed, 'ambiguous.ts': mixed.replace("`'1'`", '`1`'),
+    'nullable.ts': bare + 'type Deadline = Date | null',
+    'alias.ts': bare + 'type Dispatch = Departure | Arrival',
+    'number-type.ts': bare + "type Quantity = 'unset' | number",
+    'single.ts': bare + "type Created = 'shipment.created'",
+    'field.ts': bare + "type Route = {\n  /** Направление. */\n  leg: 'out' | 'back'\n}"
+  })
+  assert.deepEqual(issues.map(d => [d.file, d.rule]).sort(), [
+    ['missing-number.ts', 'VARIANTS'], ['ambiguous.ts', 'VARIANTS']
+  ].sort())
+})
+
 test('в TSX различает JSX компонента, хук и JSX внутри переданной функции', t => {
   const componentDoc = '/**\n * Показывает статус заявки.\n *\n * Используется для:\n *  - проверки перед погрузкой\n */\n'
   const files = {

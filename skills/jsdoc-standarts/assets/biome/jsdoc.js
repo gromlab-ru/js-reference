@@ -74,6 +74,7 @@ function readDoc(owner, target, mode, optional = false) {
 }
 
 function checkCases(block, lines, indent) {
+  const items = []
   const prefix = `${' '.repeat(indent)}- `
   const continuation = ' '.repeat(prefix.length)
   for (let i = 0; i < lines.length; i++) {
@@ -89,7 +90,9 @@ function checkCases(block, lines, indent) {
       report(block.doc, 'LIST', `Оформи пункт как «значение — смысл». Перед дефисом после «* » нужно пробелов: ${indent}. Продолжение выровняй по тексту.`)
       return
     }
+    items.push(content)
   }
+  return items
 }
 
 function checkArguments(block, fn) {
@@ -190,6 +193,47 @@ function checkValue(owner, target, mode = 'multi', cases = false, object = false
     report(block.doc, 'TAGS', 'У объекта или интерфейса опиши поля прямо у объявлений, без повторного списка @property.')
   }
   if (cases) checkCases(block, block.lines, 0)
+  return block
+}
+
+function collectLiterals(ty, variants) {
+  if (ty?.kind === 'TS_PARENTHESIZED_TYPE') return collectLiterals(ty.ty, variants)
+  if (ty?.kind === 'TS_UNION_TYPE') return ty.types.every(part => collectLiterals(part, variants))
+  if (ty?.kind !== 'TS_STRING_LITERAL_TYPE' && ty?.kind !== 'TS_NUMBER_LITERAL_TYPE') return false
+  const token = ty.literalToken
+  if (!token) return false
+  const negative = ty.kind === 'TS_NUMBER_LITERAL_TYPE' && !!ty.minusToken
+  const value = ty.kind === 'TS_STRING_LITERAL_TYPE' ? token.slice(1, -1)
+    : (negative ? -1 : 1) * Number(token.replaceAll('_', ''))
+  if (!variants.has(value)) variants.set(value, negative ? `-${token}` : token)
+  return true
+}
+
+function checkLiteralUnion(block, ty) {
+  const variants = new Map()
+  if (!collectLiterals(ty, variants) || variants.size < 2) return
+  const items = checkCases(block, block.lines, 0)
+  if (!items) return // Ошибка формы уже отмечена как LIST.
+  const first = block.lines.findIndex(line => marker.test(line))
+  if (first > 0 && block.lines[first - 1] !== '') {
+    report(block.doc, 'PARAGRAPH', 'Отдели список значений от описания типа пустой строкой.')
+  }
+
+  const spellings = new Set(variants.values())
+  let index = 0
+  for (const [value, spelling] of variants) {
+    // У строки '1' и числа 1 разные значения, даже если убрать кавычки.
+    const canOmitQuotes = typeof value === 'string' && value !== '' && value === value.trim() && !spellings.has(value)
+    const label = /^(`+)(.+?)\1\s+—\s+\S/u.exec(items[index] ?? '')?.[2].trim()
+    if (label !== spelling && !(canOmitQuotes && label === value)) {
+      report(block.doc, 'VARIANTS', `В пункте ${index + 1} опиши ${spelling}: значение в обратных кавычках — смысл.`)
+      return
+    }
+    index++
+  }
+  if (items.length > index) {
+    report(block.doc, 'VARIANTS', `Лишний пункт ${index + 1}: у каждого значения типа должно быть ровно одно пояснение.`)
+  }
 }
 
 function checkTypeFields(ty) {
@@ -339,7 +383,10 @@ function checkStatements(list, jsx) {
         let ty = node.ty
         while (ty?.kind === 'TS_PARENTHESIZED_TYPE') ty = ty.ty
         if (ty?.kind === 'TS_FUNCTION_TYPE') checkCall(owner, node.bindingIdentifier, ty, false)
-        else checkValue(owner, node.bindingIdentifier, 'multi', false, ty?.kind === 'TS_OBJECT_TYPE')
+        else {
+          const block = checkValue(owner, node.bindingIdentifier, 'multi', false, ty?.kind === 'TS_OBJECT_TYPE')
+          if (block && ty?.kind === 'TS_UNION_TYPE') checkLiteralUnion(block, ty)
+        }
         checkTypeFields(ty)
         break
       }
