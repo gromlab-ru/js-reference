@@ -1,3 +1,5 @@
+import { isPresent } from 'ts-extras'
+
 // 1. Массив: пустота, наличие элементов и минимальная длина
 export const isBoardEmpty = (ids: readonly string[]): boolean => ids.length === 0
 
@@ -38,4 +40,16 @@ export const getLocalErrorMessage = (value: unknown): string => {
     throw new TypeError('Ожидалась локальная ошибка')
   }
   return value.message
+}
+
+// 7. Ранние возвраты: отмена рейса важнее сведений о задержке
+export const getDepartureLabel = (isCancelled: boolean, delayMinutes: number | null): string => {
+  if (!isCancelled) {
+    if (isPresent(delayMinutes)) {
+      return delayMinutes === 0 ? 'По расписанию' : `Задержка: ${delayMinutes} мин`
+    } else {
+      return 'Нет данных о задержке'
+    }
+  }
+  return 'Рейс отменён'
 }

@@ -49,3 +49,16 @@ export const getLocalErrorMessage = (value: unknown): string => {
   }
   return value.message
 }
+
+// 7. Ранние возвраты: отмена рейса важнее сведений о задержке
+export const getDepartureLabel = (isCancelled: boolean, delayMinutes: number | null): string => {
+  if (isCancelled) {
+    return 'Рейс отменён'
+  }
+
+  if (!isPresent(delayMinutes)) {
+    return 'Нет данных о задержке'
+  }
+
+  return delayMinutes === 0 ? 'По расписанию' : `Задержка: ${delayMinutes} мин`
+}
