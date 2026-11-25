@@ -10,6 +10,7 @@ React SPA, а `nextjs-reference` — с правилами Next.js App Router и
 
 | Скил | Назначение |
 | --- | --- |
+| [ts-standarts](#ts-standarts) | Правила типов и исполняемого кода TypeScript, линтер и форматтер Biome |
 | [ts-styleguide](#ts-styleguide) | Написание TypeScript |
 | [jsdoc-standarts](#jsdoc-standarts) | Написание и проверка JSDoc в TypeScript |
 | [tsx-styleguide](#tsx-styleguide) | Написание React-компонентов |
@@ -19,6 +20,22 @@ React SPA, а `nextjs-reference` — с правилами Next.js App Router и
 | [nextjs-reference](#nextjs-reference) | Разработка Next.js App Router с SSR |
 
 В зависимостях перечислены другие скилы. Команды установки включают сам скил и все его зависимости.
+
+## ts-standarts
+
+Стандарт написания и ревью TypeScript в `.ts`, `.mts` и `.cts`: правила типов и исполняемого кода, выбор предикатов
+из `ts-extras` и готовый профиль Biome для форматирования и линта.
+Для ручной проверки открой [плейграунд с двумя примерами](./%20playground/ts-standarts/README.md) как отдельный проект.
+
+### Зависимости
+
+Для задач по JSDoc — `jsdoc-standarts`.
+
+### Установка
+
+```bash
+npx skills add gromlab-ru/js-reference --skill ts-standarts jsdoc-standarts
+```
 
 ## ts-styleguide
 

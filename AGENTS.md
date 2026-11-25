@@ -23,6 +23,7 @@
 
 ```text
 skills/
+├── ts-standarts/         правила кода и типов TypeScript, линтер и форматтер Biome
 ├── ts-styleguide/        TypeScript и value-predicates
 ├── jsdoc-standarts/      написание и проверка JSDoc в TypeScript
 ├── tsx-styleguide/       React-компоненты в TSX; использует ts-styleguide
@@ -74,6 +75,10 @@ npm run test:skills
 размещай непосредственно в `SKILL.md`. Отдельные справочные документы создавай только для действительно дополнительного
 материала; не выноси в них основной стайлгайд. Готовые ресурсы, например `value-predicates`, храни рядом со своей
 инструкцией подключения. Структуру `react-reference` определяет отдельный раздел ниже.
+
+В `ts-standarts` правила исполняемого кода и типов храни в `reference/code.md` и `reference/types.md`,
+а готовые конфигурации инструментов — в `assets/`. Тесты этого скилла размещай в `./ playground/ts-standarts/`.
+Для отдельной проверки профиля Biome запусти `npm run test:ts-biome` из корня репозитория.
 
 `nextjs-reference` хранит собственный процесс App Router и SSR в `reference/application/`, настройки библиотек в
 `reference/libraries/`, начальные шаблоны в `assets/templates/`. Начинай с его `SKILL.md`; не переноси в него

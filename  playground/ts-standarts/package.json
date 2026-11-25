@@ -1,0 +1,19 @@
+{
+  "name": "ts-standarts-playground",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "lint": "biome lint --max-diagnostics=none",
+    "lint:problems": "biome lint --max-diagnostics=none examples/problems.ts",
+    "check:correct": "biome check --error-on-warnings examples/correct.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "ts-extras": "3.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.9",
+    "typescript": "6.0.3"
+  }
+}

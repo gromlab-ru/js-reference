@@ -1,0 +1,67 @@
+{
+  "overrides": [
+    {
+      "includes": ["**/*.ts", "**/*.mts", "**/*.cts"],
+      "formatter": { "enabled": true },
+      "javascript": {
+        "formatter": {
+          "enabled": true,
+          "indentStyle": "space",
+          "indentWidth": 2,
+          "lineWidth": 120,
+          "lineEnding": "lf",
+          "quoteStyle": "single",
+          "semicolons": "asNeeded",
+          "trailingCommas": "none",
+          "arrowParentheses": "asNeeded",
+          "bracketSpacing": true,
+          "delimiterSpacing": false,
+          "expand": "auto",
+          "operatorLinebreak": "after"
+        }
+      },
+      "linter": {
+        "enabled": true,
+        "rules": {
+          "style": {
+            "useConst": "error",
+            "useBlockStatements": "error",
+            "noUselessElse": "error",
+            "useImportType": "error",
+            "useExportType": "error",
+            "useNamingConvention": {
+              "level": "error",
+              "options": {
+                "strictCase": false,
+                "requireAscii": false,
+                "conventions": [
+                  { "selector": { "kind": "typeLike" }, "formats": ["PascalCase"] },
+                  { "selector": { "kind": "enumMember" }, "formats": ["PascalCase"] },
+                  { "selector": { "kind": "const", "scope": "global" }, "formats": ["camelCase", "CONSTANT_CASE"] },
+                  { "selector": { "kind": "variable" }, "formats": ["camelCase"] },
+                  { "selector": { "kind": "function" }, "formats": ["camelCase"] },
+                  { "match": ".*" }
+                ]
+              }
+            },
+            "useConsistentArrayType": "off"
+          },
+          "suspicious": { "noVar": "error" },
+          "correctness": { "noUnsafeFinally": "error" }
+        }
+      }
+    }
+  ],
+  "plugins": [
+    {
+      "path": "./rules.js",
+      "resolutionKind": "config",
+      "includes": ["**/*.ts", "**/*.mts", "**/*.cts"]
+    },
+    {
+      "path": "./ts-extras/index.js",
+      "resolutionKind": "config",
+      "includes": ["**/*.ts", "**/*.mts", "**/*.cts"]
+    }
+  ]
+}

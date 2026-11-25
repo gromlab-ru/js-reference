@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "root": true,
+  "extends": ["../../skills/ts-standarts/assets/biome/ts.json"],
+  "files": { "includes": ["examples/**"] },
+  "linter": { "rules": { "preset": "none" } }
+}

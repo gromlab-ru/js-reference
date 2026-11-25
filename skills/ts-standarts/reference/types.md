@@ -46,8 +46,7 @@ type PageParams = {
   limit: number
 }
 
-const page = (ids: readonly string[], { offset, limit }: PageParams) =>
-  ids.slice(offset, offset + limit)
+const page = (ids: readonly string[], { offset, limit }: PageParams) => ids.slice(offset, offset + limit)
 ```
 
 ### Интерфейсы
@@ -76,6 +75,7 @@ type DeliveryStatus = 'queued' | 'sent'
 type DeliveryEvent =
   | 'shipment.accepted_by_carrier'
   | 'shipment.arrived_at_sorting_center'
+  | 'shipment.loading_confirmed'
   | 'shipment.received_by_recipient'
 ```
 
@@ -146,6 +146,8 @@ const externalIds: Array<string | number> = ['F42', 42]
 - Если функция только читает список, принимай `readonly Flight[]` или `ReadonlyArray<string | number>`. Через такую
   ссылку нельзя заменить элемент или вызвать `push`. Сам по себе `const` этого не запрещает, как видно у `flights`.
 
+Для проверки пустоты и чтения элементов по индексу см. [предикаты и сужение типов](code.md#предикаты-и-сужение-типов).
+
 ### Кортежи и словари
 
 - Если у позиций разный смысл, используй кортеж с подписями: `readonly [start: number, end: number]`.
@@ -202,7 +204,6 @@ type DeliveryTracker = {
 
 ## Проверка
 
-При настройке форматтера сверяй с примерами пробелы, отступы и переносы. При настройке линтера проверь обе формы:
-безымянный объект внутри `|` или `&` должен давать замечание даже после переноса строк, а объединение литералов —
-проходить. На ревью прочитай итоговое объявление: понятно ли по именам, каких данных достаточно для `|` и какие
-нужны вместе для `&`?
+Запусти [Biome с профилем скилла](../assets/biome/README.md). Безымянный объект внутри `|` или `&` должен давать
+замечание даже после переноса строк, а объединение литералов — проходить. На ревью прочитай итоговое объявление:
+понятно ли по именам, каких данных достаточно для `|` и какие нужны вместе для `&`?

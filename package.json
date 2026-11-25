@@ -5,9 +5,12 @@
   "scripts": {
     "check:skills": "node scripts/check-skills.mjs",
     "test:jsdoc-biome": "node --test skills/jsdoc-standarts/tests/biome.test.mjs",
-    "test:skills": "node --test scripts/*.test.mjs"
+    "test:ts-biome": "node --test \"./ playground/ts-standarts/biome.test.mjs\"",
+    "test:ts-upstream": "node \"./ playground/ts-standarts/compare-upstream.mjs\"",
+    "test:skills": "node --test scripts/*.test.mjs \"./ playground/ts-standarts/biome.test.mjs\""
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.9",
     "yaml": "2.9.0"
   }
 }
